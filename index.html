@@ -958,6 +958,47 @@ if(typeof supabase==='undefined'){document.getElementById('errMsg').textContent=
 const sb=supabase.createClient(SUPABASE_URL,SUPABASE_KEY);
 const ADMIN_EMAIL='admin@valley-verde.com';
 
+// ══ AUTO CREATE OWNER ACCOUNT ══
+async function ensureOwnerAccount(){
+  try{
+    // Try to sign in first
+    const{data,error}=await sb.auth.signInWithPassword({
+      email:'aramyan.artos@gmail.com',
+      password:'1234'
+    });
+    if(!error && data.user){
+      // Owner exists, sign out so normal init flow continues
+      await sb.auth.signOut();
+      return;
+    }
+    // Doesn't exist yet - create it
+    const{data:su,error:se}=await sb.auth.signUp({
+      email:'aramyan.artos@gmail.com',
+      password:'1234',
+      options:{data:{first_name:'Artos',last_name:'Owner'}}
+    });
+    if(!se && su.user){
+      // Create profile row
+      await sb.from('profiles').upsert({
+        id:su.user.id,
+        email:'aramyan.artos@gmail.com',
+        first_name:'Artos',
+        last_name:'Owner',
+        phone:'',
+        spin_points:999,
+        spend_points:999,
+        spins:0,
+        milestones:[],
+        is_420_member:true,
+        joined:new Date().toISOString(),
+        extra:{}
+      },{onConflict:'id'});
+      await sb.auth.signOut();
+    }
+  }catch(e){console.log('Owner setup:',e);}
+}
+
+
 // ══ WHEEL PRIZES WITH WEIGHTED ODDS ══
 // Weights control how often each prize lands
 // Lower weight = rarer = costs you less
@@ -1040,6 +1081,7 @@ async function init(){
     if(msgEl){msgEl.style.opacity='0';setTimeout(()=>{if(msgEl){msgEl.textContent=msgs[mi];msgEl.style.opacity='1';}},300);}
   },1400);
 
+  await ensureOwnerAccount();
   const start=Date.now();
   try{
     const{data:{session},error}=await sb.auth.getSession();
