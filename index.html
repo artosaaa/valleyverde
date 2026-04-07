@@ -2,6 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <style>
 /* 25% bigger on mobile — scales all text, spacing, buttons uniformly */
@@ -54,10 +55,7 @@ html,body{margin:0;padding:0;background:#041e28;}
 @keyframes nsSpinRing{to{transform:rotate(360deg);}}
 </style>
 
-<script>
-// Load Supabase — tries CDN, works when online
-</script>
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2" crossorigin="anonymous"></script>
+
 <style>
 *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;-webkit-font-smoothing:antialiased;}html,body{overflow-x:hidden;max-width:100vw;}
 :root{
@@ -956,6 +954,7 @@ body{
 // ══ CONFIG ══
 const SUPABASE_URL='https://lfrvrulidexntpqufhvh.supabase.co';
 const SUPABASE_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImxmcnZydWxpZGV4bnRwcXVmaHZoIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzU1MjM5MDUsImV4cCI6MjA5MTA5OTkwNX0.q0lrJ7ksShYLC81-OTzxmfg4VqXlsA9gVax0SHWVke8';
+if(typeof supabase==='undefined'){document.getElementById('errMsg').textContent='Could not load app library. Please check your internet connection.';document.getElementById('scrError').classList.add('active');document.getElementById('nsLoader').style.display='none';throw new Error('supabase not loaded');}
 const sb=supabase.createClient(SUPABASE_URL,SUPABASE_KEY);
 const ADMIN_EMAIL='admin@valley-verde.com';
 
