@@ -1,0 +1,2194 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<style>
+/* 25% bigger on mobile — scales all text, spacing, buttons uniformly */
+@media (max-width: 480px) {
+  :root { font-size: 125% !important; }
+  .btn { font-size: 1.1rem; padding: 1em; }
+  .mc-stat .sv { font-size: 1.6rem; }
+  .logo-big { font-size: 3.5rem; }
+  #l420 { font-size: 6rem !important; }
+  .nav-btn .ni { font-size: 1.6rem; }
+  .nav-btn { font-size: 0.7rem; padding: 10px 2px 8px; }
+  .card { padding: 1.4rem 1.2rem; }
+  .field input, .field textarea, .field select { font-size: 1.1rem; padding: 0.9rem 1rem; }
+  .field label { font-size: 0.8rem; }
+  .pc .pi { font-size: 2rem; }
+  .pc .pt { font-size: 0.9rem; }
+  .wheel-wrap { width: 280px; height: 310px; margin: 8px auto; }
+  .mc-name { font-size: 1.5rem; }
+  .m-name { font-size: 1rem; }
+  .m-sub { font-size: 0.8rem; }
+  .sec { font-size: 0.85rem; }
+  .hr-prize { font-size: 1rem; }
+  .hr-pts { font-size: 1rem; }
+  .redeem-name { font-size: 1rem; }
+  .ml-name { font-size: 1rem; }
+  .stat-card .sv { font-size: 1.8rem; }
+}
+</style>
+<title>Valley Verde — Loyalty</title>
+
+<!-- Loader: shows instantly -->
+<style>
+html,body{margin:0;padding:0;background:#041e28;}
+#nsLoader{
+  position:fixed;inset:0;z-index:9999;background:#041e28;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:22px;
+  font-family:-apple-system,BlinkMacSystemFont,'Helvetica Neue',Arial,sans-serif;
+  transition:opacity .5s ease;
+}
+#nsLoader .ns-brand{font-size:11px;color:rgba(0,191,175,.0);letter-spacing:6px;animation:nsFadeUp .8s ease .2s forwards;}
+#nsLoader .ns-420{font-size:86px;font-weight:900;color:#00bfaf;line-height:1;letter-spacing:-2px;opacity:0;animation:nsPop .9s cubic-bezier(.34,1.56,.64,1) .5s forwards,ns420Pulse 2.5s ease-in-out 1.4s infinite;}
+#nsLoader .ns-sub{font-size:11px;color:rgba(0,191,175,.0);letter-spacing:5px;animation:nsFadeUp .8s ease .9s forwards;}
+#nsLoader .ns-divider{width:0px;height:1px;background:linear-gradient(90deg,transparent,rgba(0,191,175,.5),transparent);animation:nsLine 1s ease 1.2s forwards;}
+#nsLoader .ns-ring{width:32px;height:32px;border:2.5px solid rgba(0,191,175,.15);border-top-color:#00bfaf;border-radius:50%;animation:nsSpinRing .8s linear infinite;opacity:0;animation:nsSpinRing .8s linear infinite,nsFadeUp .5s ease 1.4s forwards;}
+#nsLoader .ns-msg{font-size:10px;color:rgba(0,191,175,.0);letter-spacing:3px;animation:nsFadeUp .5s ease 1.6s forwards;min-height:14px;transition:opacity .3s ease;}
+@keyframes nsFadeUp{from{opacity:0;transform:translateY(6px);}to{opacity:1;transform:translateY(0);}}
+@keyframes nsPop{from{opacity:0;transform:scale(.7);}to{opacity:1;transform:scale(1);}}
+@keyframes nsLine{from{width:0px;}to{width:160px;}}
+@keyframes ns420Pulse{0%,100%{text-shadow:0 0 40px rgba(0,191,175,.8),0 0 80px rgba(0,191,175,.3);}50%{text-shadow:0 0 70px rgba(0,191,175,1),0 0 140px rgba(0,191,175,.5),0 0 200px rgba(0,191,175,.15);}}
+@keyframes nsSpinRing{to{transform:rotate(360deg);}}
+</style>
+
+<script>
+// Load Supabase — tries CDN, works when online
+</script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2" crossorigin="anonymous"></script>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;-webkit-font-smoothing:antialiased;}html,body{overflow-x:hidden;max-width:100vw;}
+:root{
+  --bg:#041e28;--card:#082535;--card2:#051828;
+  --green:#009e8e;--green-bright:#00bfaf;--gold:#00bfaf;--golddim:#007d72;
+  --white:#f5f5f7;--gray:#4a6a4e;--red:#ff453a;--border:rgba(255,255,255,.08);
+  --border-gold:rgba(0,191,175,.3);
+  --glass:rgba(255,255,255,.04);
+  --shadow:0 8px 32px rgba(0,0,0,.6);
+  --shadow-green:0 4px 24px rgba(0,158,142,.3);
+  --shadow-gold:0 4px 24px rgba(0,191,175,.2);
+  --radius:16px;--radius-sm:12px;--radius-xs:10px;
+  --spring:cubic-bezier(.34,1.56,.64,1);
+  --ease:cubic-bezier(.4,0,.2,1);
+}
+
+/* FONT — Apple system stack */
+body{
+  background:var(--bg);
+  font-family:-apple-system,BlinkMacSystemFont,'SF Pro Display','SF Pro Text','Helvetica Neue',Arial,sans-serif;
+  min-height:100vh;color:var(--white);
+  overflow-x:hidden !important;
+  max-width:100vw;
+  overscroll-behavior-x:none;
+  background-image:radial-gradient(ellipse at 20% 0%,rgba(0,158,142,.06) 0%,transparent 50%),
+    radial-gradient(ellipse at 80% 100%,rgba(0,191,175,.04) 0%,transparent 50%);
+}
+
+/* SCREENS — slide transitions */
+.screen{
+  display:none;flex-direction:column;align-items:center;
+  min-height:100vh;padding:20px 16px 110px;
+  opacity:0;transform:translateY(16px);
+  transition:opacity .35s var(--ease),transform .35s var(--ease);
+}
+.screen.active{display:flex;opacity:1;transform:translateY(0);}
+
+/* LOGO */
+.logo-brand{font-size:10px;color:var(--gold);letter-spacing:6px;text-align:center;margin-bottom:3px;font-weight:500;opacity:.8;}
+.logo-big{font-size:52px;font-weight:900;color:var(--green-bright);text-align:center;line-height:1;letter-spacing:-1px;text-shadow:0 0 40px rgba(0,191,175,.5);}
+.logo-sub{font-size:11px;color:var(--gold);letter-spacing:6px;text-align:center;margin-top:3px;margin-bottom:18px;font-weight:500;opacity:.7;}
+
+/* GLASS CARD */
+.card{
+  width:100%;max-width:420px;
+  background:rgba(15,31,16,.85);
+  backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);
+  border:1px solid var(--border);border-radius:20px;
+  padding:22px 20px;box-shadow:var(--shadow);
+}
+.card-title{font-size:21px;font-weight:700;margin-bottom:5px;letter-spacing:-.3px;}
+.card-sub{font-size:13px;color:rgba(0,191,175,.8);margin-bottom:18px;line-height:1.6;font-weight:400;}
+
+/* FIELDS */
+.field{margin-bottom:12px;}
+.field label{display:block;font-size:11px;font-weight:600;color:rgba(0,191,175,.7);letter-spacing:.5px;margin-bottom:5px;text-transform:uppercase;}
+.field input,.field textarea,.field select{
+  width:100%;background:rgba(255,255,255,.05);
+  border:1px solid var(--border);border-radius:12px;
+  padding:13px 14px;font-size:16px;color:var(--white);outline:none;
+  transition:border-color .2s var(--ease),background .2s,box-shadow .2s;
+  font-family:inherit;-webkit-appearance:none;
+}
+.field input:focus,.field textarea:focus{
+  border-color:var(--green);background:rgba(0,158,142,.06);
+  box-shadow:0 0 0 3px rgba(0,158,142,.12);
+}
+.field input::placeholder,.field textarea::placeholder{color:rgba(255,255,255,.2);}
+.field textarea{resize:none;min-height:80px;line-height:1.5;}
+
+/* BUTTONS — spring physics */
+.btn{
+  width:100%;font-size:16px;font-weight:700;letter-spacing:-.2px;
+  padding:15px;border:none;border-radius:50px;cursor:pointer;
+  transition:transform .2s var(--spring),box-shadow .2s var(--ease),opacity .15s;
+  margin-top:8px;position:relative;overflow:hidden;font-family:inherit;
+  -webkit-user-select:none;
+}
+.btn::after{content:'';position:absolute;inset:0;background:rgba(255,255,255,.0);border-radius:inherit;transition:background .15s;}
+.btn:active{transform:scale(.95);}
+.btn:active::after{background:rgba(255,255,255,.08);}
+.btn:disabled{opacity:.3;cursor:not-allowed;transform:none!important;}
+.btn-green{
+  background:linear-gradient(135deg,var(--green-bright) 0%,var(--green) 100%);
+  color:#071208;
+  box-shadow:0 4px 20px rgba(0,191,175,.35),0 1px 0 rgba(255,255,255,.2) inset;
+}
+.btn-green:not(:disabled):hover{box-shadow:0 6px 28px rgba(0,191,175,.5),0 1px 0 rgba(255,255,255,.2) inset;}
+.btn-gold{
+  background:linear-gradient(135deg,#00bfaf,#007d72);
+  color:#071208;
+  box-shadow:0 4px 20px rgba(0,191,175,.3),0 1px 0 rgba(255,255,255,.2) inset;
+}
+.btn-outline{
+  background:rgba(0,191,175,.08);color:var(--gold);
+  border:1px solid rgba(0,191,175,.3);
+  box-shadow:none;
+}
+.btn-outline:not(:disabled):hover{background:rgba(0,191,175,.12);}
+.btn-danger{background:linear-gradient(135deg,#ff453a,#cc2222);color:#fff;box-shadow:0 4px 16px rgba(255,69,58,.3);}
+.btn-sm{padding:9px 20px;font-size:13px;width:auto;border-radius:30px;margin-top:0;font-weight:600;}
+
+/* MESSAGES */
+.err{color:#ff6b6b;font-size:13px;font-weight:600;text-align:center;min-height:16px;margin:6px 0;letter-spacing:-.1px;}
+.ok{color:var(--green);font-size:13px;font-weight:600;text-align:center;min-height:16px;margin:6px 0;}
+
+/* TABS */
+.tab-bar{display:flex;gap:6px;width:100%;max-width:420px;margin-bottom:14px;background:rgba(255,255,255,.04);padding:4px;border-radius:14px;border:1px solid var(--border);}
+.tab{flex:1;padding:9px 4px;background:transparent;border:none;border-radius:10px;font-size:12px;font-weight:600;color:rgba(255,255,255,.4);cursor:pointer;text-align:center;transition:all .25s var(--ease);font-family:inherit;}
+.tab.active{background:rgba(0,158,142,.15);color:var(--green-bright);box-shadow:0 2px 8px rgba(0,158,142,.2);}
+
+/* NAV — always fixed bottom, always visible */
+.nav{
+  position:fixed;bottom:0;left:0;right:0;
+  background:rgba(6,14,7,.95);
+  backdrop-filter:blur(30px);-webkit-backdrop-filter:blur(30px);
+  border-top:1px solid var(--border);
+  display:flex;z-index:500;
+  padding:8px 8px max(env(safe-area-inset-bottom),8px);
+  gap:4px;
+}
+.nav-btn{
+  flex:1;background:transparent;border:none;
+  color:rgba(255,255,255,.35);font-size:9.5px;font-weight:600;
+  padding:6px 2px 2px;cursor:pointer;
+  display:flex;flex-direction:column;align-items:center;gap:4px;
+  transition:color .2s var(--ease),transform .2s var(--spring);
+  font-family:inherit;letter-spacing:.2px;border-radius:12px;
+  -webkit-user-select:none;
+}
+.nav-btn:active{transform:scale(.88);}
+.nav-btn .ni{font-size:23px;transition:transform .2s var(--spring);}
+.nav-btn.active{color:var(--green-bright);}
+.nav-btn.active .ni{transform:scale(1.1);}
+.nav-badge{position:absolute;top:-2px;right:-4px;background:var(--red);color:#fff;font-size:9px;font-weight:700;min-width:16px;height:16px;border-radius:8px;display:flex;align-items:center;justify-content:center;padding:0 3px;border:1.5px solid var(--bg);}
+
+/* MEMBER CARD — glass premium */
+.mc{
+  width:100%;max-width:420px;
+  background:linear-gradient(135deg,rgba(4,40,60,.9),rgba(2,26,40,.95));
+  backdrop-filter:blur(20px);
+  border:1px solid var(--border-gold);border-radius:22px;
+  padding:20px;margin-bottom:14px;position:relative;overflow:hidden;
+  box-shadow:var(--shadow-gold),inset 0 1px 0 rgba(255,255,255,.08);
+}
+.mc::before{content:'';position:absolute;top:-60px;right:-60px;width:180px;height:180px;border-radius:50%;background:radial-gradient(circle,rgba(0,191,175,.06),transparent 70%);}
+.mc::after{content:'';position:absolute;bottom:-40px;left:-40px;width:130px;height:130px;border-radius:50%;background:radial-gradient(circle,rgba(0,191,175,.04),transparent 70%);}
+.mc-name{font-size:21px;font-weight:700;letter-spacing:-.3px;}
+.mc-sub{font-size:10px;color:rgba(0,191,175,.6);letter-spacing:1.5px;margin-top:3px;font-weight:500;}
+.mc-tier{display:inline-block;font-size:10px;font-weight:700;padding:4px 12px;border-radius:20px;margin-top:7px;letter-spacing:.3px;}
+.mc-row{display:flex;gap:8px;margin-top:14px;}
+.mc-stat{flex:1;background:rgba(0,0,0,.35);border-radius:12px;padding:10px 8px;text-align:center;border:1px solid var(--border);backdrop-filter:blur(10px);}
+.mc-stat .sv{font-size:22px;font-weight:700;color:var(--green-bright);letter-spacing:-.5px;}
+.mc-stat .sl{font-size:8.5px;color:rgba(0,191,175,.7);margin-top:3px;letter-spacing:1px;font-weight:600;}
+
+/* PROGRESS */
+.prog-wrap{width:100%;max-width:420px;margin-bottom:14px;}
+.prog-label{display:flex;justify-content:space-between;font-size:11px;color:rgba(0,191,175,.7);margin-bottom:6px;font-weight:500;}
+.prog-track{height:6px;background:rgba(255,255,255,.06);border-radius:10px;overflow:hidden;}
+.prog-fill{height:100%;background:linear-gradient(90deg,var(--green-bright),var(--gold));border-radius:10px;transition:width .8s var(--ease);box-shadow:0 0 8px rgba(0,191,175,.5);}
+
+/* MILESTONES */
+.mile-row{
+  display:flex;align-items:center;gap:10px;
+  background:rgba(255,255,255,.03);border:1px solid var(--border);
+  border-radius:var(--radius-sm);padding:12px 14px;margin-bottom:8px;
+  transition:border-color .25s,background .25s,transform .2s var(--spring);
+}
+.mile-row:active{transform:scale(.98);}
+.mile-row.unlocked{border-color:rgba(0,158,142,.3);background:rgba(0,158,142,.04);}
+.m-icon{font-size:24px;filter:grayscale(1) opacity(.3);transition:filter .3s;}
+.mile-row.unlocked .m-icon{filter:none;}
+.m-info{flex:1;}
+.m-name{font-size:14px;font-weight:600;letter-spacing:-.2px;}
+.m-sub{font-size:10px;color:rgba(255,255,255,.35);margin-top:3px;line-height:1.4;}
+.m-badge{font-size:10px;font-weight:700;padding:4px 10px;border-radius:20px;white-space:nowrap;letter-spacing:.3px;}
+.m-badge.done{background:rgba(0,158,142,.2);color:var(--green-bright);border:1px solid rgba(0,158,142,.4);}
+.m-badge.lock{background:rgba(255,255,255,.06);color:rgba(255,255,255,.3);}
+
+/* WHEEL */
+.wheel-wrap{position:relative;width:320px;max-width:100%;height:365px;display:flex;flex-direction:column;align-items:center;justify-content:flex-start;margin:4px auto;touch-action:pan-y;}
+/* Spinning green ring around wheel - CSS only, no canvas redraw */
+#wc{display:block;border-radius:50%;box-shadow:0 0 30px rgba(0,191,175,.25);}
+
+/* DAILY BANNER */
+.daily-banner{
+  display:none;
+  background:rgba(0,191,175,.06);
+  backdrop-filter:blur(20px);
+  border:1px solid var(--border-gold);border-radius:14px;
+  padding:13px 16px;width:100%;max-width:420px;margin-bottom:10px;
+  align-items:center;justify-content:space-between;gap:8px;
+}
+.daily-banner.show{display:flex;}
+
+/* CONTACT BUTTONS */
+.contact-bar{display:flex;gap:8px;width:100%;max-width:420px;margin-bottom:14px;}
+.cbtn{
+  flex:1;display:flex;align-items:center;justify-content:center;gap:5px;
+  background:rgba(255,255,255,.05);border:1px solid var(--border);
+  border-radius:12px;padding:12px 6px;text-decoration:none;
+  color:var(--white);font-size:11px;font-weight:600;cursor:pointer;
+  transition:all .2s var(--ease);font-family:inherit;
+  -webkit-user-select:none;
+}
+.cbtn:active{transform:scale(.94);background:rgba(255,255,255,.08);}
+.cbtn:hover{border-color:rgba(0,158,142,.4);background:rgba(0,158,142,.06);}
+.cbtn .ci{font-size:18px;}
+
+/* HISTORY ROWS */
+.hr-row{
+  display:flex;justify-content:space-between;align-items:center;
+  background:rgba(255,255,255,.03);border:1px solid var(--border);
+  border-radius:var(--radius-xs);padding:11px 14px;margin-bottom:7px;
+  transition:background .2s;
+}
+.hr-prize{font-size:14px;font-weight:600;letter-spacing:-.1px;}
+.hr-date{font-size:10px;color:rgba(255,255,255,.35);margin-top:2px;}
+.hr-pts{font-size:14px;font-weight:700;color:var(--green-bright);}
+
+/* ADMIN */
+.stat-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;width:100%;max-width:420px;margin-bottom:14px;}
+.stat-card{
+  background:rgba(255,255,255,.04);border:1px solid var(--border);
+  border-radius:var(--radius-sm);padding:14px;text-align:center;
+  backdrop-filter:blur(10px);
+}
+.stat-card .sv{font-size:28px;font-weight:700;color:var(--green-bright);letter-spacing:-.5px;}
+.stat-card .sl{font-size:9px;color:rgba(0,191,175,.7);letter-spacing:1px;margin-top:3px;font-weight:600;}
+.ml-row{
+  display:flex;align-items:center;gap:10px;
+  background:rgba(255,255,255,.03);border:1px solid var(--border);
+  border-radius:var(--radius-sm);padding:12px 14px;margin-bottom:7px;
+  cursor:pointer;transition:all .2s var(--ease);
+}
+.ml-row:active{transform:scale(.98);background:rgba(0,158,142,.04);border-color:rgba(0,158,142,.3);}
+.ml-av{width:38px;height:38px;border-radius:50%;background:linear-gradient(135deg,var(--green-bright),var(--green));display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:700;color:#071208;flex-shrink:0;}
+.ml-info{flex:1;}
+.ml-name{font-size:14px;font-weight:600;letter-spacing:-.1px;}
+.ml-meta{font-size:10px;color:rgba(255,255,255,.35);margin-top:2px;}
+
+/* SECTION TITLE */
+.sec{font-size:12px;font-weight:600;color:rgba(0,191,175,.7);letter-spacing:1px;margin-bottom:10px;width:100%;max-width:420px;text-transform:uppercase;}
+
+/* PREVIEW STRIP */
+.preview-strip{width:100%;max-width:420px;overflow-x:auto;display:flex;gap:10px;padding:4px 2px 10px;margin-bottom:14px;-webkit-overflow-scrolling:touch;scrollbar-width:none;cursor:grab;}
+.preview-strip::-webkit-scrollbar{display:none;}
+.pc{flex-shrink:0;width:130px;background:rgba(255,255,255,.04);border:1px solid var(--border);border-radius:16px;padding:14px 10px;text-align:center;backdrop-filter:blur(10px);transition:transform .2s var(--spring);}
+.pc:active{transform:scale(.95);}
+.pc .pi{font-size:28px;margin-bottom:6px;}
+.pc .pt{font-size:12px;font-weight:600;color:var(--white);}
+.pc .ps{font-size:10px;color:rgba(255,255,255,.35);margin-top:4px;line-height:1.4;}
+.strip-wrap{position:relative;width:100%;max-width:420px;}
+.strip-hint{
+  position:absolute;right:0;top:50%;transform:translateY(-60%);
+  font-size:28px;color:var(--gold);pointer-events:none;
+  animation:hintBounce 1.2s ease-in-out infinite;
+  text-shadow:0 0 12px rgba(0,191,175,.6);
+}
+@keyframes hintBounce{0%,100%{opacity:.5;transform:translateY(-60%) translateX(0);}50%{opacity:1;transform:translateY(-60%) translateX(6px);}}
+
+/* RIPPLE */
+.ripple-container{position:relative;overflow:hidden;}
+.ripple-wave{
+  position:absolute;border-radius:50%;
+  background:rgba(255,255,255,.3);
+  transform:scale(0);animation:rippleAnim .55s linear;
+  pointer-events:none;
+}
+@keyframes rippleAnim{to{transform:scale(4);opacity:0;}}
+
+/* ANIMATED CALL BUTTON */
+@keyframes callPulseOut{0%{opacity:.8;transform:scale(1);}100%{opacity:0;transform:scale(1.5);}}
+@keyframes phoneRing{0%,100%{transform:rotate(0);}8%{transform:rotate(-18deg);}16%{transform:rotate(18deg);}24%{transform:rotate(-12deg);}32%{transform:rotate(12deg);}40%{transform:rotate(-6deg);}48%{transform:rotate(6deg);}56%{transform:rotate(0);}}
+@keyframes floatUp{0%{opacity:0;transform:translateY(0) scale(1);}20%{opacity:1;}80%{opacity:.7;}100%{opacity:0;transform:translateY(-140px) scale(.5) rotate(30deg);}}
+.call-ring{position:absolute;inset:-3px;border-radius:20px;border:2px solid var(--green-bright);opacity:0;animation:callPulseOut 2s ease-out infinite;}
+.phone-icon{animation:phoneRing 2.5s ease-in-out infinite;}
+
+
+/* TIER ROWS */
+.tier-row{display:flex;align-items:center;gap:10px;background:rgba(255,255,255,.03);border:1px solid var(--border);border-radius:var(--radius-sm);padding:12px 14px;margin-bottom:8px;transition:all .2s;}
+.tier-row.cur{border-color:var(--border-gold);background:rgba(0,191,175,.05);}
+
+/* REDEEM */
+.redeem-row{display:flex;align-items:center;gap:10px;background:rgba(255,255,255,.03);border:1px solid var(--border);border-radius:var(--radius-sm);padding:12px 14px;margin-bottom:8px;transition:all .25s var(--ease);}
+.redeem-row.can{border-color:var(--border-gold);background:rgba(0,191,175,.04);}
+.redeem-info{flex:1;}
+.redeem-name{font-size:14px;font-weight:600;letter-spacing:-.1px;}
+.redeem-cost{font-size:10px;color:rgba(0,191,175,.7);margin-top:3px;}
+.rbtn{background:linear-gradient(135deg,#00bfaf,#007d72);color:#071208;border:none;border-radius:20px;padding:8px 16px;font-size:11px;font-weight:700;cursor:pointer;transition:transform .2s var(--spring),box-shadow .2s;font-family:inherit;}
+.rbtn:active{transform:scale(.9);}
+.rbtn:disabled{opacity:.3;cursor:not-allowed;transform:none!important;}
+
+/* OVERLAY — smooth slide up */
+.overlay{
+  display:none;position:fixed;inset:0;
+  background:rgba(0,0,0,.85);
+  backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);
+  z-index:9000;align-items:center;justify-content:center;
+  padding:16px;
+}
+.overlay.show{display:flex;animation:fadeIn .25s var(--ease);}
+@keyframes fadeIn{from{opacity:0;}to{opacity:1;}}
+.popup{
+  background:rgba(15,25,16,.97);
+  backdrop-filter:blur(30px);-webkit-backdrop-filter:blur(30px);
+  border:1px solid rgba(255,255,255,.12);
+  border-radius:24px;
+  padding:28px 24px 32px;
+  width:100%;max-width:380px;
+  animation:popIn .35s var(--spring);
+  max-height:88vh;overflow-y:auto;
+  text-align:center;
+}
+@keyframes popIn{from{transform:scale(.85);opacity:0;}to{transform:scale(1);opacity:1;}}
+/* Drag handle removed - centered popup doesn't need it */
+
+/* INBOX */
+.inbox-row{display:flex;align-items:center;gap:11px;background:rgba(255,255,255,.03);border:1px solid var(--border);border-radius:var(--radius-sm);padding:12px 14px;margin-bottom:8px;cursor:pointer;transition:all .2s var(--ease);}
+.inbox-row:active{transform:scale(.98);background:rgba(0,158,142,.04);}
+.inbox-row.unread{border-color:rgba(0,158,142,.3);}
+
+/* ADMIN INPUTS */
+.inp-row{display:flex;gap:8px;align-items:center;}
+.inp-row input{flex:1;background:rgba(255,255,255,.05);border:1px solid var(--border);border-radius:10px;padding:10px 12px;color:var(--white);font-size:14px;outline:none;transition:border-color .2s,box-shadow .2s;font-family:inherit;}
+.inp-row input:focus{border-color:var(--green);box-shadow:0 0 0 3px rgba(0,158,142,.12);}
+
+/* SPINNER */
+.spinr{width:38px;height:38px;border:3px solid rgba(255,255,255,.1);border-top-color:var(--green-bright);border-radius:50%;animation:sp .7s linear infinite;}
+@keyframes sp{to{transform:rotate(360deg);}}
+.star.active{filter:none!important;}
+#scrError{background:var(--bg);}
+.error-box{text-align:center;max-width:320px;padding:30px 20px;}
+</style>
+</head>
+<body>
+
+<!-- LOADER — simple, instant, reliable -->
+<div id="nsLoader">
+  <div class="ns-brand">✦ VALLEY VERDE ✦</div>
+  <div class="ns-420">4/20</div>
+  <div class="ns-sub">LOYALTY & SPIN</div>
+  <div class="ns-divider"></div>
+  <div class="ns-ring"></div>
+  <div class="ns-msg" id="nsMsg">LOADING YOUR ACCOUNT...</div>
+</div>
+
+<style>
+@keyframes fadeUp{from{opacity:0;transform:translateY(20px);}to{opacity:1;transform:translateY(0);}}
+@keyframes siBtnPulse{0%,100%{box-shadow:0 4px 20px rgba(0,191,175,.35),0 0 0 0 rgba(0,191,175,0);}50%{box-shadow:0 4px 30px rgba(0,191,175,.6),0 0 0 8px rgba(0,191,175,.08);}}
+</style>
+
+<!-- ERROR -->
+<div class="screen" id="scrError">
+  <div class="error-box">
+    <div style="font-size:52px;margin-bottom:12px;">⚠️</div>
+    <div style="font-size:18px;font-weight:900;color:var(--red);margin-bottom:8px;">Something went wrong</div>
+    <div style="font-size:13px;color:var(--gray);margin-bottom:24px;line-height:1.6;" id="errMsg">Please check your connection and try again.</div>
+    <button class="btn btn-green" onclick="location.reload()">🔄 Refresh App</button>
+  </div>
+</div>
+
+<!-- AUTH -->
+<div class="screen" id="scrAuth">
+  <div class="logo-brand">✦ VALLEY VERDE ✦</div>
+  <div class="logo-big">4/20</div>
+  <div class="logo-sub">LOYALTY & SPIN</div>
+
+  <div style="width:100%;max-width:420px;font-size:10px;color:var(--gold);letter-spacing:2px;text-align:center;margin-bottom:7px;">← SWIPE TO SEE ALL BENEFITS →</div>
+  <div class="strip-wrap">
+    <div class="preview-strip" id="previewStrip">
+      <div class="pc"><div class="pi">🎰</div><div class="pt">Daily Spin</div><div class="ps">Win prizes every single day — free!</div></div>
+      <div class="pc"><div class="pi">🏆</div><div class="pt">Spend Loyalty</div><div class="ps">Bronze → Silver → Gold → VIP perks</div></div>
+      <div class="pc"><div class="pi">🎁</div><div class="pt">Redeem Rewards</div><div class="ps">Free pre-rolls, discounts & more</div></div>
+      <div class="pc"><div class="pi">🎂</div><div class="pt">Birthday Gift</div><div class="ps">Free joint, vape or flower up to $20!</div></div>
+      <div class="pc"><div class="pi">💬</div><div class="pt">Exclusive Deals</div><div class="ps">Promos & deals sent straight to you</div></div>
+      <div class="pc"><div class="pi">🌿</div><div class="pt">Milestone Rewards</div><div class="ps">Hit goals, unlock bigger prizes</div></div>
+    </div>
+    <div class="strip-hint">›</div>
+  </div>
+
+  <div class="card">
+    <!-- SIGN IN -->
+    <div id="step1">
+      <div class="card-title">🌿 Welcome Back!</div>
+      <div class="card-sub">Sign in to spin & earn rewards.</div>
+      <div class="field"><label>Email</label><input type="email" id="siEmail" placeholder="you@email.com"/></div>
+      <div class="field"><label>Password</label><input type="password" id="siPass" placeholder="Your password"/></div>
+      <div class="err" id="err1"></div>
+      <button class="btn btn-green" id="siBtn" onclick="doSignIn()" style="position:relative;overflow:hidden;transition:box-shadow .3s,transform .2s cubic-bezier(.34,1.56,.64,1);">SIGN IN 🌿</button>
+      <div style="display:flex;align-items:center;gap:10px;margin:10px 0 4px;"><div style="flex:1;height:1px;background:var(--border);"></div><span style="font-size:10px;color:var(--gray);letter-spacing:1px;">OR</span><div style="flex:1;height:1px;background:var(--border);"></div></div>
+      <button class="btn btn-outline" id="mlBtn" onclick="doMagicLink()" style="color:var(--green-bright);border-color:rgba(0,191,175,.4);">✉️ SEND MAGIC LINK</button>
+      <button class="btn btn-outline" onclick="goStep(2)">Create New Account →</button>
+      <div style="display:flex;align-items:center;justify-content:center;gap:14px;margin-top:10px;">
+        <button style="background:none;border:none;color:var(--golddim);font-size:11px;cursor:pointer;text-decoration:underline;" onclick="goStep(3)">Forgot password?</button>
+        <button class="btn btn-outline btn-sm" onclick="showScreen('scrAdminLogin')">🔐 Staff</button>
+      </div>
+    </div>
+    <!-- SIGN UP -->
+    <div id="step2" style="display:none;">
+      <div class="card-title">🎉 Join Free!</div>
+      <div class="card-sub">Create your loyalty account — start earning today!</div>
+      <div class="field"><label>First Name</label><input type="text" id="regFirst" placeholder="First name"/></div>
+      <div class="field"><label>Last Name</label><input type="text" id="regLast" placeholder="Last name"/></div>
+      <div class="field"><label>Phone Number</label><input type="tel" id="regPhone" placeholder="+1 (818) 000-0000"/></div>
+      <div class="field"><label>Email</label><input type="email" id="regEmail" placeholder="you@email.com"/></div>
+      <div class="field"><label>Password</label><input type="password" id="regPass" placeholder="Min 6 characters"/></div>
+      <div class="field">
+        <label>Birthday 🎂 (optional)</label>
+        <input type="date" id="regBday"/>
+        <div style="background:rgba(0,191,175,.07);border:1px solid rgba(0,191,175,.3);border-radius:9px;padding:8px 11px;margin-top:5px;font-size:11px;color:var(--green);line-height:1.5;">🎁 Add birthday → FREE gift up to $20 every year on your special day!</div>
+      </div>
+      <div class="err" id="err2"></div>
+      <button class="btn btn-green" id="suBtn" onclick="doSignUp()">CREATE ACCOUNT 🎰</button>
+      <button class="btn btn-outline" onclick="goStep(1)">← Back to Sign In</button>
+    </div>
+    <!-- FORGOT PASSWORD -->
+    <div id="step3" style="display:none;">
+      <div class="card-title">🔑 Reset Password</div>
+      <div class="card-sub">Enter your email — we'll send a reset link straight to your inbox.</div>
+      <div class="field"><label>Email</label><input type="email" id="fpEmail" placeholder="you@email.com"/></div>
+      <div class="err" id="err3"></div>
+      <div class="ok" id="fpOk"></div>
+      <button class="btn btn-green" id="fpBtn" onclick="doForgotPass()">SEND RESET LINK 📧</button>
+      <button class="btn btn-outline" onclick="goStep(1)">← Back to Sign In</button>
+    </div>
+  </div>
+
+  <div class="contact-bar" style="margin-top:12px;">
+    <a class="cbtn" href="tel:+18182903833"><span class="ci">📞</span>(818) 290-3833</a>
+    <a class="cbtn" href="https://maps.app.goo.gl/bheRJQ8aP8c4wNGR6" target="_blank"><span class="ci">📍</span>Get Directions</a>
+  </div>
+  <div style="font-size:10px;color:var(--gray);text-align:center;">14903 Sherman Way · Van Nuys, CA · valley-verde.com</div>
+</div>
+
+<!-- ADMIN LOGIN -->
+<div class="screen" id="scrAdminLogin">
+  <div class="logo-brand">✦ VALLEY VERDE ✦</div>
+  <div class="logo-big" style="font-size:32px;margin-bottom:14px;">STAFF</div>
+  <div class="card">
+    <div class="card-title">🔐 Staff Login</div>
+    <div class="field"><label>Email</label><input type="email" id="adminEmail" placeholder="Email"/></div>
+    <div class="field"><label>Password</label><input type="password" id="adminPass" placeholder="Password"/></div>
+    <div class="err" id="adminErr"></div>
+    <button class="btn btn-green" onclick="adminLogin()">SIGN IN</button>
+    <button class="btn btn-outline" onclick="showScreen('scrAuth')">← Back</button>
+  </div>
+</div>
+
+<!-- HOME -->
+<div class="screen" id="scrHome">
+  <div class="logo-brand" style="margin-bottom:2px;">✦ VALLEY VERDE ✦</div>
+  <div class="logo-big" style="font-size:28px;margin-bottom:12px;">MY ACCOUNT</div>
+
+  <!-- Birthday Banner -->
+  <div id="bdayBanner" style="display:none;width:100%;max-width:420px;background:linear-gradient(135deg,#041e28,#031820);border:2px solid var(--gold);border-radius:15px;padding:16px;margin-bottom:12px;text-align:center;box-shadow:var(--shadow-gold);">
+    <div style="font-size:32px;margin-bottom:5px;">🎂</div>
+    <div style="font-size:18px;font-weight:900;color:var(--gold);">Happy Birthday!</div>
+    <div style="font-size:12px;margin-top:5px;line-height:1.6;color:var(--white);">You have a <strong style="color:var(--green);">FREE BIRTHDAY GIFT</strong> waiting!<br>Choose a joint, vape, or flower up to <strong style="color:var(--green);">$20</strong><br>Show this screen to staff to claim 🎁</div>
+  </div>
+
+  <!-- 4/20 FOUNDING MEMBER BANNER -->
+  <div id="f420Banner" style="display:none;width:100%;max-width:420px;background:linear-gradient(135deg,#041e28,#020e18);border:2px solid var(--green-bright);border-radius:15px;padding:14px 18px;margin-bottom:12px;position:relative;overflow:hidden;">
+    <div style="position:absolute;top:-20px;right:-20px;font-size:80px;opacity:.06;pointer-events:none;">🌿</div>
+    <div style="display:flex;align-items:center;gap:12px;">
+      <div style="font-size:34px;flex-shrink:0;">🏷️</div>
+      <div style="flex:1;">
+        <div style="font-size:15px;font-weight:700;color:var(--green-bright);letter-spacing:-.1px;">4/20 Founding Member</div>
+        <div style="font-size:12px;color:rgba(255,255,255,.6);margin-top:3px;line-height:1.5;"><strong style="color:var(--green-bright);">10% OFF every visit, forever.</strong><br>Show this to staff at checkout 🌿</div>
+      </div>
+    </div>
+    <div style="margin-top:10px;background:rgba(0,191,175,.1);border:1px solid rgba(0,191,175,.3);border-radius:10px;padding:8px 12px;text-align:center;font-size:13px;font-weight:700;color:var(--green-bright);">
+      🎉 10% OFF ALWAYS APPLIED
+    </div>
+  </div>
+
+  <div class="mc">
+    <div class="mc-name" id="mcName">—</div>
+    <div class="mc-sub" id="mcSub">—</div>
+    <div style="display:flex;flex-wrap:wrap;gap:5px;align-items:center;margin-top:6px;">
+      <div class="mc-tier" id="mcTier">MEMBER</div>
+      <div id="mc420Badge" style="display:none;font-size:10px;font-weight:700;padding:4px 12px;border-radius:20px;background:rgba(0,191,175,.15);color:var(--green-bright);border:1px solid rgba(0,191,175,.4);letter-spacing:.3px;">🏷️ 4/20 · 10% OFF</div>
+      <div id="ownerBadge" style="display:none;font-size:10px;font-weight:700;padding:4px 12px;border-radius:20px;background:linear-gradient(135deg,rgba(0,191,175,.25),rgba(0,191,175,.1));color:var(--gold);border:1px solid rgba(0,191,175,.5);letter-spacing:.3px;animation:siBtnPulse 3s ease-in-out infinite;">👑 OWNER</div>
+    </div>
+    <div class="mc-row">
+      <div class="mc-stat"><div class="sv" id="mcSP">0</div><div class="sl">SPIN PTS</div></div>
+      <div class="mc-stat"><div class="sv" id="mcDP" style="color:var(--gold);">0</div><div class="sl">SPEND PTS</div></div>
+      <div class="mc-stat"><div class="sv" id="mcSpins">0</div><div class="sl">SPINS</div></div>
+      <div class="mc-stat"><div class="sv" id="mcStreak" style="color:#ff9500;">0🔥</div><div class="sl">DAY STREAK</div></div>
+    </div>
+  </div>
+
+  <!-- Owner banner -->
+  <div id="ownerBanner" style="display:none;width:100%;max-width:420px;background:linear-gradient(135deg,#021020,#010810);border:2px solid rgba(0,191,175,.6);border-radius:15px;padding:14px 18px;margin-bottom:12px;position:relative;overflow:hidden;">
+    <div style="position:absolute;top:-15px;right:-15px;font-size:60px;opacity:.07;">👑</div>
+    <div style="display:flex;align-items:center;gap:12px;">
+      <div style="font-size:30px;animation:phoneRing 4s ease-in-out infinite;">👑</div>
+      <div>
+        <div style="font-size:15px;font-weight:700;color:var(--gold);letter-spacing:-.1px;">Owner Mode — Artos</div>
+        <div style="font-size:12px;color:rgba(255,255,255,.5);margin-top:3px;line-height:1.5;">Unlimited spins · <strong style="color:var(--green-bright);">10% OFF always</strong> · Demo access</div>
+      </div>
+    </div>
+    <div style="margin-top:10px;background:rgba(0,191,175,.08);border:1px solid rgba(0,191,175,.2);border-radius:10px;padding:8px 12px;text-align:center;font-size:12px;font-weight:700;color:var(--gold);">
+      🏷️ 10% OFF EVERY VISIT — SHOW TO STAFF
+    </div>
+  </div>
+
+  <!-- Streak Banner -->
+  <div id="streakBanner" style="display:none;width:100%;max-width:420px;background:linear-gradient(135deg,#031820,#041520);border:2px solid #ff9500;border-radius:14px;padding:12px 16px;margin-bottom:11px;align-items:center;gap:12px;">
+    <div style="font-size:30px;">🔥</div>
+    <div style="flex:1;">
+      <div style="font-size:15px;font-weight:900;color:#ff9500;"><span id="streakNum">0</span>-Day Streak! Keep it up!</div>
+      <div style="font-size:10px;color:var(--gray);margin-top:2px;">Total app visits: <span id="streakVisits">0</span></div>
+    </div>
+  </div>
+
+  <div class="prog-wrap">
+    <div class="prog-label"><span id="progLabel">Next Reward</span><span id="progCount"></span></div>
+    <div class="prog-track"><div class="prog-fill" id="progFill" style="width:0%"></div></div>
+  </div>
+
+  <div class="contact-bar">
+    <a class="cbtn" href="https://maps.app.goo.gl/bheRJQ8aP8c4wNGR6" target="_blank"><span class="ci">📍</span>Directions</a>
+    <a class="cbtn" href="https://valley-verde.com" target="_blank"><span class="ci">🌐</span>Website</a>
+  </div>
+
+  <!-- ANIMATED CALL BUTTON -->
+  <div style="width:100%;max-width:420px;margin-bottom:14px;">
+    <button id="callBtn" onclick="doCall()" class="ripple-container" style="width:100%;background:linear-gradient(135deg,rgba(0,191,175,.12),rgba(0,158,142,.06));border:1.5px solid rgba(0,191,175,.4);border-radius:18px;padding:18px 20px;cursor:pointer;position:relative;overflow:hidden;transition:all .3s var(--spring);">
+      <div class="call-ring" style="animation-delay:0s;"></div>
+      <div class="call-ring" style="animation-delay:.6s;"></div>
+      <div class="call-ring" style="animation-delay:1.2s;"></div>
+      <div style="position:relative;z-index:2;display:flex;align-items:center;gap:14px;">
+        <div class="phone-icon" style="font-size:34px;flex-shrink:0;">📞</div>
+        <div style="text-align:left;">
+          <div style="font-size:17px;font-weight:700;color:var(--green-bright);letter-spacing:-.2px;">Call to Order</div>
+          <div style="font-size:12px;color:rgba(0,191,175,.7);margin-top:2px;font-weight:500;">(818) 290-3833 · Tap to call us now</div>
+        </div>
+        <div style="margin-left:auto;font-size:22px;opacity:.5;">›</div>
+      </div>
+    </button>
+    <div id="callNotif" style="display:none;background:rgba(0,158,142,.1);border:1px solid rgba(0,158,142,.3);border-radius:12px;padding:10px 14px;margin-top:8px;font-size:13px;color:var(--green-bright);font-weight:600;text-align:center;animation:fadeIn .3s ease;">
+      📲 Notifying staff you're calling...
+    </div>
+  </div>
+
+  <div class="sec">🏅 MY MILESTONES</div>
+  <div id="homeMiles" style="width:100%;max-width:420px;"></div>
+  <div class="sec" style="margin-top:6px;">🎰 RECENT SPINS</div>
+  <div id="homeHist" style="width:100%;max-width:420px;"></div>
+
+  <!-- REVIEW BOX -->
+  <div class="sec" style="margin-top:6px;">⭐ LEAVE A REVIEW</div>
+  <div style="width:100%;max-width:420px;background:var(--card);border:2px solid var(--border);border-radius:16px;padding:18px;margin-bottom:12px;">
+    <div style="font-size:13px;color:var(--gold);margin-bottom:12px;line-height:1.5;">We love hearing from you! Rate your experience and share any suggestions.</div>
+    <!-- Star rating -->
+    <div style="display:flex;gap:8px;justify-content:center;margin-bottom:14px;" id="starRow">
+      <span class="star" onclick="setStars(1)" style="font-size:32px;cursor:pointer;filter:grayscale(1);transition:all .2s;">⭐</span>
+      <span class="star" onclick="setStars(2)" style="font-size:32px;cursor:pointer;filter:grayscale(1);transition:all .2s;">⭐</span>
+      <span class="star" onclick="setStars(3)" style="font-size:32px;cursor:pointer;filter:grayscale(1);transition:all .2s;">⭐</span>
+      <span class="star" onclick="setStars(4)" style="font-size:32px;cursor:pointer;filter:grayscale(1);transition:all .2s;">⭐</span>
+      <span class="star" onclick="setStars(5)" style="font-size:32px;cursor:pointer;filter:grayscale(1);transition:all .2s;">⭐</span>
+    </div>
+    <div id="starLabel" style="text-align:center;font-size:13px;color:var(--gray);margin-bottom:12px;">Tap to rate</div>
+    <div class="field">
+      <label>Review Type</label>
+      <select id="reviewType" style="color:var(--white);">
+        <option value="review">⭐ General Review</option>
+        <option value="suggestion">💡 Suggestion</option>
+        <option value="complaint">😔 Complaint</option>
+        <option value="compliment">🙌 Compliment</option>
+      </select>
+    </div>
+    <div class="field">
+      <label>Your Message</label>
+      <textarea id="reviewText" placeholder="Share your experience, suggestions, or feedback..."></textarea>
+    </div>
+    <div class="ok" id="reviewOk"></div>
+    <div class="err" id="reviewErr"></div>
+    <button class="btn btn-green" onclick="submitReview()">SUBMIT ⭐</button>
+  </div>
+</div>
+
+<!-- SPIN -->
+<div class="screen" id="scrSpin">
+  <div class="logo-brand">✦ VALLEY VERDE ✦</div>
+  <div class="logo-big" style="margin-bottom:2px;">4/20</div>
+  <div class="logo-sub">SPIN & WIN</div>
+
+  <div style="background:var(--card);border:1.5px solid var(--border);border-radius:12px;padding:10px 14px;margin-bottom:9px;width:100%;max-width:420px;display:flex;justify-content:space-between;align-items:center;box-shadow:var(--shadow-card);">
+    <span style="font-size:12px;color:var(--gold);">Your Spin Points</span>
+    <span style="font-size:20px;font-weight:900;color:var(--green);text-shadow:0 0 10px rgba(0,191,175,.4);" id="spinPts">0</span>
+  </div>
+
+  <div class="daily-banner" id="dailyBanner">
+    <div><div style="font-size:13px;font-weight:900;color:var(--gold);" id="bannerTitle">Daily Spin Used ✅</div><div style="font-size:10px;color:var(--gray);margin-top:2px;" id="bannerSub">Next spin in</div></div>
+    <div style="font-size:20px;font-weight:900;color:var(--green);text-shadow:0 0 10px rgba(0,191,175,.4);" id="countdown">—</div>
+  </div>
+
+  <div class="wheel-wrap">
+    <!-- Pointer arrow at top -->
+    <div style="position:absolute;top:0;left:50%;transform:translateX(-50%);z-index:20;width:0;height:0;border-left:14px solid transparent;border-right:14px solid transparent;border-top:28px solid #00bfaf;filter:drop-shadow(0 0 8px #00bfaf);"></div>
+    <!-- Wheel canvas — always visible -->
+    <canvas id="wc" width="310" height="310" style="width:310px;height:310px;display:block;border-radius:50%;box-shadow:0 0 20px rgba(0,191,175,.3);margin-top:22px;"></canvas>
+  </div>
+
+  <button class="btn btn-green" id="spinBtn" onclick="doSpin()" style="max-width:270px;font-size:20px;letter-spacing:3px;margin-bottom:14px;">🌿 SPIN!</button>
+
+  <div class="sec">🎁 PRIZES</div>
+  <div id="prizeList" style="width:100%;max-width:420px;"></div>
+</div>
+
+<!-- REDEEM -->
+<div class="screen" id="scrRedeem">
+  <div class="logo-brand">✦ VALLEY VERDE ✦</div>
+  <div class="logo-big" style="font-size:30px;margin-bottom:12px;">REWARDS</div>
+
+  <div class="mc" style="margin-bottom:12px;">
+    <div style="display:flex;justify-content:space-between;align-items:center;">
+      <div><div style="font-size:10px;color:var(--gold);">SPIN POINTS</div><div style="font-size:30px;font-weight:900;color:var(--green);text-shadow:0 0 10px rgba(0,191,175,.3);" id="rdSP">0</div></div>
+      <div style="text-align:right;"><div style="font-size:10px;color:var(--gold);">SPEND POINTS</div><div style="font-size:30px;font-weight:900;color:var(--gold);" id="rdDP">0</div></div>
+    </div>
+    <div style="font-size:9px;color:var(--gray);margin-top:8px;">Spin pts = from wheel · Spend pts = earned in store per $1</div>
+  </div>
+
+  <div class="sec">💎 SPEND LOYALTY TIERS</div>
+  <div id="spendTiers" style="width:100%;max-width:420px;margin-bottom:14px;"></div>
+  <div class="sec">🎁 REDEEM SPIN POINTS</div>
+  <div id="redeemList" style="width:100%;max-width:420px;"></div>
+</div>
+
+<!-- INBOX -->
+<div class="screen" id="scrInbox">
+  <div class="logo-brand">✦ VALLEY VERDE ✦</div>
+  <div class="logo-big" style="font-size:30px;margin-bottom:12px;">INBOX</div>
+  <div id="inboxList" style="width:100%;max-width:420px;"></div>
+</div>
+
+<!-- THREAD -->
+<div class="screen" id="scrThread">
+  <button onclick="gotoTab('inbox')" style="background:none;border:none;color:var(--gold);font-size:13px;font-weight:700;cursor:pointer;align-self:flex-start;margin-bottom:12px;">← Back to Inbox</button>
+  <div class="sec" id="threadSub">Message</div>
+  <div id="msgThread" style="width:100%;max-width:420px;display:flex;flex-direction:column;gap:9px;"></div>
+</div>
+
+<!-- SETTINGS -->
+<div class="screen" id="scrSettings">
+  <div class="logo-brand" style="margin-bottom:2px;">✦ VALLEY VERDE ✦</div>
+  <div class="logo-big" style="font-size:28px;margin-bottom:14px;">SETTINGS</div>
+
+  <!-- UPDATE PROFILE -->
+  <div class="sec">👤 MY INFORMATION</div>
+  <div class="card" style="margin-bottom:12px;">
+    <div class="field"><label>First Name</label><input type="text" id="setFirst" placeholder="First name"/></div>
+    <div class="field"><label>Last Name</label><input type="text" id="setLast" placeholder="Last name"/></div>
+    <div class="field"><label>Phone Number</label><input type="tel" id="setPhone" placeholder="+1 (818) 000-0000"/></div>
+    <div class="field"><label>Birthday 🎂</label><input type="date" id="setBday"/></div>
+    <div class="ok" id="profileOk"></div>
+    <div class="err" id="profileErr"></div>
+    <button class="btn btn-green" onclick="saveProfile()">SAVE CHANGES ✅</button>
+  </div>
+
+  <!-- CHANGE PASSWORD -->
+  <div class="sec">🔑 CHANGE PASSWORD</div>
+  <div class="card" style="margin-bottom:12px;">
+    <div class="field"><label>New Password</label><input type="password" id="newPass" placeholder="Min 6 characters"/></div>
+    <div class="field"><label>Confirm Password</label><input type="password" id="confirmPass" placeholder="Repeat new password"/></div>
+    <div class="ok" id="passOk"></div>
+    <div class="err" id="passErr"></div>
+    <button class="btn btn-green" onclick="changePassword()">UPDATE PASSWORD 🔑</button>
+  </div>
+
+  <!-- NOTIFICATIONS -->
+  <div class="sec">🔔 NOTIFICATIONS</div>
+  <div class="card" style="margin-bottom:14px;">
+    <div style="display:flex;align-items:center;justify-content:space-between;padding:6px 0;border-bottom:1px solid var(--border);margin-bottom:10px;">
+      <div><div style="font-size:14px;font-weight:700;">Deals & Promotions</div><div style="font-size:11px;color:var(--gray);margin-top:2px;">Get exclusive offers from us</div></div>
+      <label style="position:relative;width:46px;height:26px;cursor:pointer;">
+        <input type="checkbox" id="notifDeals" style="opacity:0;width:0;height:0;" onchange="saveNotifs()"/>
+        <span id="toggleDeals" style="position:absolute;inset:0;background:var(--border);border-radius:26px;transition:.3s;"></span>
+      </label>
+    </div>
+    <div style="display:flex;align-items:center;justify-content:space-between;padding:6px 0;border-bottom:1px solid var(--border);margin-bottom:10px;">
+      <div><div style="font-size:14px;font-weight:700;">Birthday Reminder</div><div style="font-size:11px;color:var(--gray);margin-top:2px;">Get notified about your birthday gift</div></div>
+      <label style="position:relative;width:46px;height:26px;cursor:pointer;">
+        <input type="checkbox" id="notifBday" style="opacity:0;width:0;height:0;" onchange="saveNotifs()"/>
+        <span id="toggleBday" style="position:absolute;inset:0;background:var(--border);border-radius:26px;transition:.3s;"></span>
+      </label>
+    </div>
+    <div style="display:flex;align-items:center;justify-content:space-between;padding:6px 0;">
+      <div><div style="font-size:14px;font-weight:700;">Loyalty Updates</div><div style="font-size:11px;color:var(--gray);margin-top:2px;">Points, milestones & rewards</div></div>
+      <label style="position:relative;width:46px;height:26px;cursor:pointer;">
+        <input type="checkbox" id="notifLoyalty" style="opacity:0;width:0;height:0;" onchange="saveNotifs()"/>
+        <span id="toggleLoyalty" style="position:absolute;inset:0;background:var(--border);border-radius:26px;transition:.3s;"></span>
+      </label>
+    </div>
+    <div class="ok" id="notifOk" style="margin-top:8px;"></div>
+  </div>
+
+  <!-- REQUEST SPEND POINTS -->
+  <div class="sec">💰 REQUEST SPEND POINTS</div>
+  <div class="card" style="margin-bottom:12px;">
+    <div style="font-size:13px;color:var(--gold);margin-bottom:12px;line-height:1.6;">Spent money at the store? Submit your purchase details and our staff will review and add your loyalty points!</div>
+    <div class="field">
+      <label>Amount Spent ($)</label>
+      <input type="number" id="reqAmt" placeholder="e.g. 50" min="1"/>
+    </div>
+    <div style="display:flex;gap:10px;">
+      <div class="field" style="flex:1;">
+        <label>Date of Purchase</label>
+        <input type="date" id="reqDate"/>
+      </div>
+      <div class="field" style="flex:1;">
+        <label>Time of Purchase</label>
+        <input type="time" id="reqTime" placeholder="e.g. 2:30 PM"/>
+      </div>
+    </div>
+    <div class="field">
+      <label>Product &amp; Quantity</label>
+      <input type="text" id="reqQty" placeholder="e.g. 2x eighths Blue Dream"/>
+    </div>
+    <div class="field">
+      <label>Your Email (so we can contact you)</label>
+      <input type="email" id="reqEmail" placeholder="you@email.com"/>
+    </div>
+    <div class="field">
+      <label>Additional Note (optional)</label>
+      <input type="text" id="reqNote" placeholder="Anything else we should know"/>
+    </div>
+    <div class="ok" id="reqOk"></div>
+    <div class="err" id="reqErr"></div>
+    <button class="btn btn-gold" onclick="submitSpendRequest()">SUBMIT REQUEST 💰</button>
+    <div style="font-size:10px;color:var(--gray);margin-top:8px;text-align:center;">Staff will review and add points within 24 hours</div>
+  </div>
+
+  <!-- MY PAST REQUESTS -->
+  <div class="sec">📋 MY REQUESTS</div>
+  <div id="myRequests" style="width:100%;max-width:420px;margin-bottom:14px;"></div>
+
+  <!-- SUPPORT -->
+  <div class="sec">🆘 SUPPORT</div>
+  <div class="card" style="margin-bottom:12px;">
+    <div class="card-sub" style="margin-bottom:14px;">Have an issue or need help? Send us a message and we'll get back to you!</div>
+    <div class="field">
+      <label>Your Email (required)</label>
+      <input type="email" id="supportEmail" placeholder="you@email.com"/>
+    </div>
+    <div class="field">
+      <label>Type</label>
+      <select id="supportType" style="color:var(--white);">
+        <option value="general">❓ General Question</option>
+        <option value="points">💰 Points Issue</option>
+        <option value="prize">🎁 Prize / Reward Issue</option>
+        <option value="account">👤 Account Problem</option>
+        <option value="app">📱 App Bug</option>
+        <option value="other">💬 Other</option>
+      </select>
+    </div>
+    <div class="field">
+      <label>Your Message</label>
+      <textarea id="supportMsg" placeholder="Describe your issue or question..."></textarea>
+    </div>
+    <div class="ok" id="supportOk"></div>
+    <div class="err" id="supportErr"></div>
+    <button class="btn btn-green" onclick="submitSupport()">SEND TO SUPPORT 🆘</button>
+    <div style="text-align:center;margin-top:10px;font-size:11px;color:var(--gray);">Or call us: <a href="tel:+18182903833" style="color:var(--gold);text-decoration:none;">(818) 290-3833</a></div>
+  </div>
+
+  <!-- SIGN OUT -->
+  <div style="width:100%;max-width:420px;">
+    <button class="btn btn-outline" onclick="signOut()" style="color:var(--red);border-color:var(--red);">🚪 Sign Out</button>
+  </div>
+</div>
+
+<!-- ADMIN -->
+<div class="screen" id="scrAdmin">
+  <div style="display:flex;justify-content:space-between;align-items:center;width:100%;max-width:420px;margin-bottom:12px;">
+    <div style="font-size:18px;font-weight:900;color:var(--gold);">🔐 Admin Panel</div>
+    <button class="btn btn-outline btn-sm" onclick="signOut()">Sign Out</button>
+  </div>
+  <div class="stat-grid" id="adminStats"></div>
+  <div class="tab-bar">
+    <button class="tab active" id="at1" onclick="adminTab('members')">Members</button>
+    <button class="tab" id="at2" onclick="adminTab('wins')">Wins</button>
+    <button class="tab" id="at3" onclick="adminTab('msg')">Messages</button>
+    <button class="tab" id="at4" onclick="adminTab('requests')">Requests</button>
+    <button class="tab" id="at5" onclick="adminTab('reviews')">Reviews</button>
+  </div>
+  <div id="aMembers" style="width:100%;max-width:420px;">
+    <div class="sec">ALL MEMBERS — tap to manage</div>
+    <div id="aMemberList"></div>
+  </div>
+  <div id="aWins" style="display:none;width:100%;max-width:420px;">
+    <div class="sec">PRIZES WON — unclaimed first</div>
+    <div id="aWinList"></div>
+  </div>
+  <div id="aMsg" style="display:none;width:100%;max-width:420px;">
+    <div class="sec">SEND MESSAGE TO MEMBER</div>
+    <div class="card" style="margin-bottom:12px;">
+      <div class="field"><label>Member</label><select id="msgTarget" style="color:var(--white);"><option value="">— Choose —</option></select></div>
+      <div class="field"><label>Subject</label><input type="text" id="msgSubject" placeholder="e.g. Special offer just for you!"/></div>
+      <div class="field"><label>Message</label><textarea id="msgBody" placeholder="Type your message..."></textarea></div>
+      <div class="ok" id="msgOk"></div><div class="err" id="msgErr"></div>
+      <button class="btn btn-green" onclick="sendMsg()">SEND MESSAGE 📨</button>
+    </div>
+    <div class="sec">BROADCAST TO ALL MEMBERS</div>
+    <div class="card">
+      <div class="field"><label>Subject</label><input type="text" id="bcSubject" placeholder="e.g. 4/20 Sale is live!"/></div>
+      <div class="field"><label>Message</label><textarea id="bcBody" placeholder="Message to all members..."></textarea></div>
+      <div class="ok" id="bcOk"></div>
+      <button class="btn btn-gold" onclick="broadcast()">📢 SEND TO ALL MEMBERS</button>
+    </div>
+  </div>
+  <div id="aRequests" style="display:none;width:100%;max-width:420px;">
+    <div class="sec">💰 SPEND POINT REQUESTS</div>
+    <div id="aRequestList"></div>
+  </div>
+  <div id="aReviews" style="display:none;width:100%;max-width:420px;">
+    <div class="sec">⭐ REVIEWS & SUGGESTIONS</div>
+    <div id="aReviewList"></div>
+  </div>
+</div>
+<div class="overlay" id="memberPop">
+  <div class="popup" style="max-width:360px;max-height:88vh;overflow-y:auto;text-align:left;">
+    <div style="text-align:center;margin-bottom:14px;">
+      <div style="font-size:22px;font-weight:900;" id="mpName"></div>
+      <div style="font-size:11px;color:var(--gold);margin-top:2px;" id="mpContact"></div>
+      <div style="font-size:10px;color:var(--gray);" id="mpJoined"></div>
+    </div>
+    <div style="display:flex;gap:7px;margin-bottom:14px;">
+      <div style="flex:1;background:var(--card2);border-radius:10px;padding:10px;text-align:center;border:1px solid var(--border);"><div style="font-size:20px;font-weight:900;color:var(--green);" id="mpSP"></div><div style="font-size:9px;color:var(--gold);">SPIN PTS</div></div>
+      <div style="flex:1;background:var(--card2);border-radius:10px;padding:10px;text-align:center;border:1px solid var(--border);"><div style="font-size:20px;font-weight:900;color:var(--gold);" id="mpDP"></div><div style="font-size:9px;color:var(--gold);">SPEND PTS</div></div>
+      <div style="flex:1;background:var(--card2);border-radius:10px;padding:10px;text-align:center;border:1px solid var(--border);"><div style="font-size:20px;font-weight:900;color:var(--green);" id="mpSpins"></div><div style="font-size:9px;color:var(--gold);">SPINS</div></div>
+    </div>
+
+    <div style="background:var(--card2);border-radius:12px;padding:13px;margin-bottom:10px;border:1px solid var(--border);">
+      <div style="font-size:11px;font-weight:700;color:var(--gold);margin-bottom:6px;">💰 ADD SPEND POINTS</div>
+      <div style="font-size:10px;color:var(--gray);margin-bottom:8px;">Enter $ amount customer spent. Tier multiplier applies automatically.</div>
+      <div class="inp-row">
+        <input type="number" id="spendAmt" placeholder="$ spent e.g. 75"/>
+        <button class="btn btn-gold btn-sm" onclick="addSpendPts()">Add</button>
+      </div>
+      <div id="spendOk" style="font-size:11px;color:var(--green);margin-top:5px;font-weight:700;"></div>
+    </div>
+
+    <div style="background:var(--card2);border-radius:12px;padding:13px;margin-bottom:12px;border:1px solid var(--border);">
+      <div style="font-size:11px;font-weight:700;color:var(--gold);margin-bottom:6px;">🎁 ADD BONUS SPIN POINTS</div>
+      <div style="font-size:10px;color:var(--gray);margin-bottom:8px;">Manually add spin points for promotions, corrections, or rewards.</div>
+      <div class="inp-row">
+        <input type="number" id="bonusAmt" placeholder="Points to add"/>
+        <button class="btn btn-green btn-sm" onclick="addBonusPts()">Add</button>
+      </div>
+      <div id="bonusOk" style="font-size:11px;color:var(--green);margin-top:5px;font-weight:700;"></div>
+    </div>
+
+    <!-- GRANT 4/20 MEMBERSHIP -->
+    <div style="background:rgba(0,191,175,.06);border:1px solid rgba(0,191,175,.3);border-radius:11px;padding:12px;margin-bottom:12px;">
+      <div style="font-size:11px;font-weight:700;color:var(--green-bright);margin-bottom:6px;">🏷️ 4/20 FOUNDING MEMBER</div>
+      <div style="font-size:10px;color:rgba(255,255,255,.5);margin-bottom:10px;">Grants permanent 10% off every visit — shows as badge on their account</div>
+      <div style="display:flex;gap:8px;align-items:center;">
+        <div id="mp420Status" style="flex:1;font-size:12px;font-weight:700;"></div>
+        <button id="mp420Btn" class="btn btn-green btn-sm" onclick="toggle420Member()">Grant</button>
+      </div>
+      <div id="mp420Ok" style="font-size:11px;color:var(--green);margin-top:5px;font-weight:700;"></div>
+    </div>
+
+    <button class="btn btn-outline" style="width:100%;" onclick="closeOv('memberPop')">Close</button>
+  </div>
+</div>
+
+<!-- SPIN RESULT -->
+<div class="overlay" id="resultOv">
+  <div class="popup" style="text-align:center;">
+    <div style="font-size:54px;margin-bottom:8px;" id="popEmoji"></div>
+    <div style="font-size:24px;font-weight:900;color:var(--green);margin-bottom:5px;text-shadow:0 0 10px rgba(0,191,175,.4);" id="popPrize"></div>
+    <div style="font-size:12px;color:var(--gold);">Congrats,</div>
+    <div style="font-size:17px;font-weight:900;margin-bottom:8px;" id="popName"></div>
+    <div style="font-size:13px;line-height:1.5;margin-bottom:8px;" id="popDesc"></div>
+    <div style="font-size:12px;color:var(--green);font-weight:700;margin-bottom:18px;" id="popPts"></div>
+    <button class="btn btn-green" onclick="closeResult()">AWESOME! 🎉</button>
+  </div>
+</div>
+
+<!-- REDEEM CONFIRM -->
+<div class="overlay" id="redeemOv">
+  <div class="popup" style="text-align:center;">
+    <div style="font-size:44px;margin-bottom:8px;">🎁</div>
+    <div style="font-size:18px;font-weight:900;color:var(--gold);margin-bottom:6px;" id="rvTitle"></div>
+    <div style="font-size:13px;line-height:1.5;margin-bottom:10px;" id="rvDesc"></div>
+    <div style="font-size:12px;color:var(--green);font-weight:700;margin-bottom:18px;">Show this screen to staff at the counter to claim! ✅</div>
+    <button class="btn btn-green" onclick="closeOv('redeemOv')">GOT IT!</button>
+  </div>
+</div>
+
+<script>
+// ══ CONFIG ══
+const SUPABASE_URL='https://lfrvrulidexntpqufhvh.supabase.co';
+const SUPABASE_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImxmcnZydWxpZGV4bnRwcXVmaHZoIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzU1MjM5MDUsImV4cCI6MjA5MTA5OTkwNX0.q0lrJ7ksShYLC81-OTzxmfg4VqXlsA9gVax0SHWVke8';
+const sb=supabase.createClient(SUPABASE_URL,SUPABASE_KEY);
+const ADMIN_EMAIL='admin@valley-verde.com';
+
+// ══ WHEEL PRIZES WITH WEIGHTED ODDS ══
+// Weights control how often each prize lands
+// Lower weight = rarer = costs you less
+const PRIZES=[
+  {label:'TRY AGAIN',   emoji:'🍀',color:'#041e28',pts:2,  win:false, weight:30}, // 30% - most common
+  {label:'TRY AGAIN',   emoji:'🌿',color:'#051e30',pts:2,  win:false, weight:25}, // 25% - common
+  {label:'5% OFF',      emoji:'🍃',color:'#0a3a4a',pts:8,  win:true,  weight:18}, // 18%
+  {label:'10% OFF',     emoji:'💚',color:'#0a4858',pts:12, win:true,  weight:12}, // 12%
+  {label:'15% OFF',     emoji:'🌱',color:'#0a5868',pts:16, win:true,  weight:8},  // 8%
+  {label:'FREE PRE-ROLL',emoji:'🌿',color:'#062838',pts:25,win:true,  weight:4},  // 4%
+  {label:'20% OFF',     emoji:'🏷️',color:'#0a3a4a',pts:20, win:true,  weight:2},  // 2%
+  {label:'FREE GIFT',   emoji:'🎁',color:'#031822',pts:30, win:true,  weight:1},  // 1% - rare!
+];
+
+// Build weighted pool for spinning
+const WEIGHTED_POOL=[];
+PRIZES.forEach((p,i)=>{for(let w=0;w<p.weight;w++)WEIGHTED_POOL.push(i);});
+
+// Display prizes (unique list for prize board)
+const DISPLAY_PRIZES=[
+  {label:'5% OFF',       emoji:'🍃',desc:'5% off your entire purchase today!'},
+  {label:'10% OFF',      emoji:'💚',desc:'10% off your purchase today!'},
+  {label:'15% OFF',      emoji:'🌱',desc:'15% off your purchase today!'},
+  {label:'FREE PRE-ROLL',emoji:'🌿',desc:'Free pre-roll with any $30+ purchase!'},
+  {label:'20% OFF',      emoji:'🏷️',desc:'20% off your purchase today!'},
+  {label:'FREE GIFT',    emoji:'🎁',desc:'Free gift — claim at the counter!'},
+];
+
+const SPIN_MILES=[
+  {id:'s3', icon:'🌱',name:'First Steps', spins:3, pts:30, reward:'$3 store credit'},
+  {id:'s5', icon:'🍃',name:'Green Thumb', spins:5, pts:50, reward:'Free rolling papers'},
+  {id:'s10',icon:'🌿',name:'Regular',     spins:10,pts:75, reward:'10% off + free pre-roll'},
+  {id:'s20',icon:'💚',name:'Loyal',       spins:20,pts:150,reward:'15% off any order'},
+  {id:'s50',icon:'🏆',name:'Legend',      spins:50,pts:400,reward:'VIP + free 1/8'},
+];
+
+const SPEND_TIERS=[
+  {id:'bronze',icon:'🥉',name:'Bronze',color:'#cd7f32',min:0,   perk:'1 pt per $1 spent',                          multi:1  },
+  {id:'silver',icon:'🥈',name:'Silver',color:'#c0c0c0',min:500, perk:'1.5 pts per $1 · 5% off every visit',        multi:1.5},
+  {id:'gold',  icon:'🥇',name:'Gold',  color:'#ffd700',min:1000,perk:'2 pts per $1 · 10% off every visit',         multi:2  },
+  {id:'vip',   icon:'💎',name:'VIP',   color:'#4a9eff',min:2500,perk:'3 pts per $1 · 15% off · free pre-roll/month',multi:3 },
+];
+
+const REDEEMABLES=[
+  {id:'r1',name:'$5 Off',           cost:60,  desc:'$5 discount on your next purchase'},
+  {id:'r2',name:'10% Off',          cost:90,  desc:'10% off your entire purchase'},
+  {id:'r3',name:'Free Pre-Roll',    cost:120, desc:'One free pre-roll of your choice'},
+  {id:'r4',name:'Free Edible',      cost:180, desc:'One free edible of your choice'},
+  {id:'r5',name:'$20 Off',          cost:220, desc:'$20 discount on your next purchase'},
+  {id:'r6',name:'Free 1/8',         cost:380, desc:'Free 1/8 oz of your choice'},
+  {id:'r7',name:'Free Glass Piece', cost:480, desc:'Free glass piece from our selection'},
+];
+
+// ══ STATE ══
+let currentUser=null,profile=null,isAdmin=false,adminMemberId=null;
+
+// ══ ERROR HANDLING ══
+window.onerror=function(msg,src,line){
+  showScreen('scrError');
+  const el=document.getElementById('errMsg');
+  if(el)el.textContent='Error: '+msg+' (check connection)';
+  return true;
+};
+
+function handleErr(e,fallback='Something went wrong.'){
+  console.error(e);
+  showScreen('scrError');
+  const el=document.getElementById('errMsg');
+  if(el)el.textContent=(e&&e.message?e.message:fallback)+'\n\nTap Refresh to try again.';
+}
+
+// ══ INIT ══
+async function init(){
+  // Cycle loading messages while waiting
+  const msgs=['LOADING YOUR ACCOUNT...','SETTING UP REWARDS...','ALMOST READY...'];
+  let mi=0;
+  const msgEl=document.getElementById('nsMsg');
+  const msgTimer=setInterval(()=>{
+    mi=(mi+1)%msgs.length;
+    if(msgEl){msgEl.style.opacity='0';setTimeout(()=>{if(msgEl){msgEl.textContent=msgs[mi];msgEl.style.opacity='1';}},300);}
+  },1400);
+
+  const start=Date.now();
+  try{
+    const{data:{session},error}=await sb.auth.getSession();
+    if(error)throw error;
+    // Always show loader minimum 2.5s so it feels smooth
+    const wait=Math.max(0,2500-(Date.now()-start));
+    await new Promise(r=>setTimeout(r,wait));
+    clearInterval(msgTimer);
+    if(session){
+      currentUser=session.user;
+      if(currentUser.email===ADMIN_EMAIL){isAdmin=true;await loadAdmin();}
+      else{await loadProfile();}
+    }else{
+      showScreen('scrAuth');
+    }
+  }catch(e){
+    clearInterval(msgTimer);
+    handleErr(e,'Could not connect. Check your internet.');
+  }
+}
+
+// ══ AUTH ══
+function goStep(n){[1,2,3].forEach(i=>document.getElementById('step'+i).style.display=i===n?'block':'none');}
+
+function btnLoad(btn,text=''){
+  btn.disabled=true;
+  btn.dataset.orig=btn.innerHTML;
+  btn.innerHTML=`<span style="display:inline-flex;align-items:center;gap:10px;"><span style="width:16px;height:16px;border:2px solid rgba(0,0,0,.3);border-top-color:#071208;border-radius:50%;animation:sp .6s linear infinite;display:inline-block;"></span>${text||'Loading...'}</span>`;
+}
+function btnReset(btn){
+  btn.disabled=false;
+  if(btn.dataset.orig)btn.innerHTML=btn.dataset.orig;
+}
+
+async function doSignIn(){
+  const email=document.getElementById('siEmail').value.trim();
+  const pass=document.getElementById('siPass').value;
+  const err=document.getElementById('err1'),btn=document.getElementById('siBtn');
+  if(!email||!pass){err.textContent='⚠️ Fill in all fields.';return;}
+  err.textContent='';btnLoad(btn,'Signing in...');
+  try{
+    const{data,error}=await sb.auth.signInWithPassword({email,password:pass});
+    if(error)throw error;
+    currentUser=data.user;
+    if(currentUser.email===ADMIN_EMAIL){isAdmin=true;await loadAdmin();}
+    else{await loadProfile();}
+  }catch(e){
+    err.textContent='⚠️ Wrong email or password.';
+    btnReset(btn);
+  }
+}
+
+async function doSignUp(){
+  const first=document.getElementById('regFirst').value.trim();
+  const last=document.getElementById('regLast').value.trim();
+  const phone=document.getElementById('regPhone').value.trim();
+  const email=document.getElementById('regEmail').value.trim();
+  const pass=document.getElementById('regPass').value;
+  const bday=document.getElementById('regBday').value;
+  const err=document.getElementById('err2'),btn=document.getElementById('suBtn');
+  if(!first||!last||!phone||!email){err.textContent='⚠️ All fields except birthday are required.';return;}
+  if(pass.length<6){err.textContent='⚠️ Password min 6 characters.';return;}
+  err.textContent='';btnLoad(btn,'Creating account...');
+  try{
+    const{data,error}=await sb.auth.signUp({email,password:pass});
+    if(error)throw error;
+    currentUser=data.user;
+    let digits=phone.replace(/\D/g,'');
+    if(digits.length===10)digits='1'+digits;
+    const now=new Date();
+    const is420=now.getMonth()===3&&now.getDate()===20; // April 20
+    const np={
+      id:currentUser.id,phone:'+'+digits,first_name:first,last_name:last,email,
+      birthday:bday||null,spin_points:0,spend_points:0,spins:0,
+      milestones:[],last_spin_date:null,birthday_claimed:0,
+      is_420_member:is420,
+      joined:new Date().toISOString(),extra:{}
+    };
+    const{error:pe}=await sb.from('profiles').insert(np);
+    if(pe)throw pe;
+    // Welcome message
+    const welcomeMsg=is420
+      ?`Hey ${first}! 🎉🌿\n\nYou joined on 4/20 — you're officially a FOUNDING MEMBER!\n\n🏷️ You get 10% OFF every single visit, forever.\n🎰 Spin the wheel daily to win prizes\n💎 Earn spend points every time you visit\n🎁 Redeem points for free products & discounts\n🎂 A free birthday gift up to $20 every year\n\nThank you for joining on our special 4/20 day!\n— Valley Verde Team`
+      :`Hey ${first}! 🎉\n\nWelcome to Valley Verde loyalty. Here's what you get:\n\n🎰 Spin the wheel daily to win prizes\n💎 Earn spend points every time you visit\n🎁 Redeem points for free products & discounts\n🎂 A free birthday gift up to $20 every year\n\nCome see us soon!\n— Valley Verde Team`;
+    await sb.from('messages').insert({
+      recipient_id:currentUser.id,
+      subject:is420?"🌿 Welcome 4/20 Founding Member!":"🌿 Welcome to Valley Verde!",
+      body:welcomeMsg,
+      read:false,msg_type:'system'
+    });
+    profile=np;renderAll();gotoTab('spin');
+  }catch(e){
+    err.textContent='⚠️ '+(e.message||'Sign up failed. Try again.');
+  }finally{btnReset(btn);}
+}
+
+async function doForgotPass(){
+  const email=document.getElementById('fpEmail').value.trim();
+  const err=document.getElementById('err3'),ok=document.getElementById('fpOk'),btn=document.getElementById('fpBtn');
+  if(!email){err.textContent='⚠️ Enter your email.';return;}
+  err.textContent='';btnLoad(btn,'Sending reset link...');
+  try{
+    const{error}=await sb.auth.resetPasswordForEmail(email,{redirectTo:window.location.href});
+    if(error)throw error;
+    ok.textContent='✅ Check your inbox! Reset link sent to '+email;
+  }catch(e){
+    err.textContent='⚠️ '+(e.message||'Could not send reset email.');
+  }finally{btnReset(btn);}
+}
+
+
+async function doMagicLink(){
+  const email=document.getElementById('siEmail').value.trim();
+  const err=document.getElementById('err1'),btn=document.getElementById('mlBtn');
+  if(!email){err.textContent='⚠️ Enter your email first.';return;}
+  err.textContent='';btnLoad(btn,'Sending...');
+  try{
+    const{error}=await sb.auth.signInWithOtp({email,options:{emailRedirectTo:window.location.href}});
+    if(error)throw error;
+    err.style.color='var(--green-bright)';
+    err.textContent='✅ Magic link sent! Check your inbox and tap the link.';
+    setTimeout(()=>{err.textContent='';err.style.color='';},6000);
+  }catch(e){
+    err.style.color='';
+    err.textContent='⚠️ '+(e.message||'Could not send magic link.');
+  }finally{btnReset(btn);}
+}
+
+async function adminLogin(){
+  const email=document.getElementById('adminEmail').value.trim();
+  const pass=document.getElementById('adminPass').value;
+  const err=document.getElementById('adminErr');
+  try{
+    const{data,error}=await sb.auth.signInWithPassword({email,password:pass});
+    if(error)throw error;
+    currentUser=data.user;isAdmin=true;await loadAdmin();
+  }catch(e){err.textContent='⚠️ '+(e.message||'Wrong credentials.');}
+}
+
+async function signOut(){
+  try{await sb.auth.signOut();}catch(e){}
+  currentUser=null;profile=null;isAdmin=false;
+  showGlobalNav(false);
+  goStep(1);showScreen('scrAuth');
+}
+}
+
+// ══ LOAD PROFILE ══
+async function loadProfile(){
+  try{
+    const{data,error}=await sb.from('profiles').select('*').eq('id',currentUser.id).single();
+    if(error)throw error;
+    if(!data){showScreen('scrAuth');return;}
+    profile=data;
+    await trackVisit();
+    renderAll();showGlobalNav(true);
+    document.getElementById('gnHome').className='nav-btn active';
+    showScreen('scrHome');
+    updateInboxBadge();
+  }catch(e){handleErr(e,'Could not load your profile.');}
+}
+
+async function trackVisit(){
+  if(!profile)return;
+  const today=new Date().toDateString();
+  const lastVisit=profile.last_visit_date;
+  const lastDate=lastVisit?new Date(lastVisit).toDateString():null;
+  if(lastDate===today)return; // already tracked today
+
+  const yesterday=new Date();yesterday.setDate(yesterday.getDate()-1);
+  const wasYesterday=lastDate===yesterday.toDateString();
+  const newStreak=wasYesterday?(profile.visit_streak||0)+1:1;
+  const newVisits=(profile.total_visits||0)+1;
+  const now=new Date().toISOString();
+
+  await sb.from('profiles').update({
+    last_visit_date:now,
+    visit_streak:newStreak,
+    total_visits:newVisits,
+  }).eq('id',currentUser.id);
+
+  profile.last_visit_date=now;
+  profile.visit_streak=newStreak;
+  profile.total_visits=newVisits;
+}
+
+// ══ HELPERS ══
+function getTier(pts){return[...SPEND_TIERS].reverse().find(t=>pts>=t.min)||SPEND_TIERS[0];}
+function tierColor(id){return{bronze:'#cd7f32',silver:'#c0c0c0',gold:'#ffd700',vip:'#4a9eff'}[id]||'#00bfaf';}
+
+// ══ INBOX BADGE ══
+async function updateInboxBadge(){
+  try{
+    const{count}=await sb.from('messages').select('id',{count:'exact',head:true}).eq('recipient_id',currentUser.id).eq('read',false);
+    ['inboxNavBtn','inboxNavBtn2','inboxNavBtn3','inboxNavBtn4'].forEach(id=>{
+      const el=document.getElementById(id);if(!el)return;
+      let badge=el.querySelector('.nav-badge');
+      if(count>0){
+        if(!badge){badge=document.createElement('div');badge.className='nav-badge';el.appendChild(badge);}
+        badge.textContent=count;
+      }else if(badge){badge.remove();}
+    });
+  }catch(e){}
+}
+
+// ══ RENDER ALL ══
+function renderAll(){
+  if(!profile)return;
+  const sp=profile.spin_points||0,dp=profile.spend_points||0,spins=profile.spins||0;
+  const tier=getTier(dp);const tc=tierColor(tier.id);
+  // Member card
+  document.getElementById('mcName').textContent=profile.first_name+' '+profile.last_name;
+  document.getElementById('mcSub').textContent=profile.phone||profile.email||'';
+  const te=document.getElementById('mcTier');te.textContent=tier.icon+' '+tier.name.toUpperCase();te.style.background=tc;te.style.color='#071208';
+  document.getElementById('mcSP').textContent=sp;
+  document.getElementById('mcDP').textContent=dp;
+  document.getElementById('mcSpins').textContent=spins;
+  const streak=profile.visit_streak||0;
+  const totalVisits=profile.total_visits||0;
+  const sEl=document.getElementById('mcStreak');
+  if(sEl)sEl.textContent=streak+'🔥';
+  // Streak banner
+  const sb2=document.getElementById('streakBanner');
+  if(sb2){
+    if(streak>=3){
+      sb2.style.display='block';
+      document.getElementById('streakNum').textContent=streak;
+      document.getElementById('streakVisits').textContent=totalVisits;
+    }else{sb2.style.display='none';}
+  }
+  document.getElementById('spinPts').textContent=sp;
+  document.getElementById('rdSP').textContent=sp;
+  document.getElementById('rdDP').textContent=dp;
+  // Progress
+  const sm=[...SPIN_MILES].sort((a,b)=>a.spins-b.spins);
+  const next=sm.find(m=>spins<m.spins);
+  if(next){
+    const prev=sm[sm.indexOf(next)-1],base=prev?prev.spins:0;
+    const pct=Math.min(100,((spins-base)/(next.spins-base))*100);
+    document.getElementById('progLabel').textContent='Next: '+next.name;
+    document.getElementById('progCount').textContent=spins+'/'+next.spins;
+    document.getElementById('progFill').style.width=pct+'%';
+  }else{
+    document.getElementById('progLabel').textContent='🏆 All milestones unlocked!';
+    document.getElementById('progFill').style.width='100%';
+  }
+  renderMiles(spins);renderPrizeBoard();renderSpendTiers(dp);renderRedeemables(sp);renderHist();renderInbox();checkBday();check420();checkDailyBanner();
+  updateInboxBadge();
+}
+
+function renderMiles(spins){
+  const el=document.getElementById('homeMiles');if(!el)return;
+  const miles=profile.milestones||[];
+  el.innerHTML=SPIN_MILES.map(m=>{
+    const done=miles.includes(m.id);
+    return`<div class="mile-row ${done?'unlocked':''}"><div class="m-icon">${m.icon}</div><div class="m-info"><div class="m-name">${m.name}</div><div class="m-sub">${m.spins} spins · 🎁 ${m.reward} · +${m.pts} bonus pts</div><div class="m-sub">${spins}/${m.spins} spins</div></div><div class="m-badge ${done?'done':'lock'}">${done?'✓ DONE':'🔒'}</div></div>`;
+  }).join('');
+}
+
+function renderPrizeBoard(){
+  const el=document.getElementById('prizeList');if(!el)return;
+  el.innerHTML=DISPLAY_PRIZES.map(p=>`
+    <div style="display:flex;align-items:center;gap:11px;background:var(--card2);border:1.5px solid var(--border);border-radius:10px;padding:10px 13px;margin-bottom:8px;box-shadow:var(--shadow-card);">
+      <span style="font-size:20px;">${p.emoji}</span>
+      <span style="font-size:14px;font-weight:900;flex:1;">${p.label}</span>
+      <span style="font-size:10px;color:var(--gray);">Spin to win</span>
+    </div>`).join('');
+}
+
+function renderSpendTiers(dp){
+  const el=document.getElementById('spendTiers');if(!el)return;
+  const cur=getTier(dp);
+  el.innerHTML=SPEND_TIERS.map(t=>{
+    const isCur=t.id===cur.id,tc=tierColor(t.id);
+    return`<div class="tier-row ${isCur?'cur':''}">
+      <div style="font-size:22px;">${t.icon}</div>
+      <div style="flex:1;">
+        <div style="font-size:13px;font-weight:900;color:${tc};">${t.name}</div>
+        <div style="font-size:10px;color:var(--gray);margin-top:2px;">${t.perk}</div>
+        <div style="font-size:10px;color:var(--gray);">${t.min === 0 ? 'Starting tier' : t.min+'+ spend pts to unlock'}</div>
+      </div>
+      <div style="font-size:10px;font-weight:700;padding:4px 10px;border-radius:20px;white-space:nowrap;${isCur?'background:'+tc+';color:#071208;box-shadow:0 2px 8px rgba(0,0,0,.3)':'background:var(--border);color:var(--gray)'};">${isCur?'✓ YOURS':'🔒'}</div>
+    </div>`;
+  }).join('');
+}
+
+function renderRedeemables(sp){
+  const el=document.getElementById('redeemList');if(!el)return;
+  el.innerHTML=REDEEMABLES.map(r=>{
+    const can=sp>=r.cost;
+    return`<div class="redeem-row ${can?'can':''}">
+      <div class="redeem-info">
+        <div class="redeem-name">${r.name}</div>
+        <div class="redeem-cost">${r.cost} spin pts needed · you have ${sp}</div>
+      </div>
+      <button class="rbtn" ${can?'':'disabled'} onclick="doRedeem('${r.id}','${r.name}','${r.desc}',${r.cost})">${can?'REDEEM':'🔒'}</button>
+    </div>`;
+  }).join('');
+}
+
+async function renderHist(){
+  const el=document.getElementById('homeHist');if(!el)return;
+  try{
+    const{data}=await sb.from('spins').select('*').eq('user_id',currentUser.id).order('created_at',{ascending:false}).limit(7);
+    if(!data||!data.length){el.innerHTML='<div style="text-align:center;color:var(--gray);padding:20px;font-size:13px;">No spins yet — go spin! 🎰</div>';return;}
+    el.innerHTML=data.map(s=>`<div class="hr-row"><div><div class="hr-prize">${s.emoji} ${s.prize}</div><div class="hr-date">${new Date(s.created_at).toLocaleString()}</div></div><div class="hr-pts">${s.is_winner?'+'+s.pts+'pts':'😅'}</div></div>`).join('');
+  }catch(e){}
+}
+
+async function renderInbox(){
+  const el=document.getElementById('inboxList');if(!el)return;
+  try{
+    const{data}=await sb.from('messages').select('*').eq('recipient_id',currentUser.id).order('created_at',{ascending:false});
+    if(!data||!data.length){el.innerHTML='<div style="text-align:center;color:var(--gray);padding:30px;font-size:13px;">No messages yet 📭</div>';return;}
+    el.innerHTML=data.map(m=>`
+      <div class="inbox-row ${!m.read?'unread':''}" onclick="openMsg('${m.id}','${encodeURIComponent(m.subject)}','${encodeURIComponent(m.body)}','${m.created_at}')">
+        <div style="width:40px;height:40px;border-radius:50%;background:linear-gradient(135deg,#00bfaf,#28cc0e);display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:900;color:#071208;flex-shrink:0;box-shadow:var(--shadow-green);">NS</div>
+        <div style="flex:1;overflow:hidden;">
+          <div style="font-size:14px;font-weight:700;${!m.read?'color:var(--white)':'color:var(--gray)'}">${m.subject}</div>
+          <div style="font-size:11px;color:var(--gray);margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${m.body.substring(0,55)}...</div>
+        </div>
+        ${!m.read?'<div style="width:10px;height:10px;border-radius:50%;background:var(--green);flex-shrink:0;box-shadow:var(--shadow-green);"></div>':''}
+      </div>`).join('');
+  }catch(e){}
+}
+
+async function openMsg(id,subject,body,date){
+  try{
+    await sb.from('messages').update({read:true}).eq('id',id);
+    document.getElementById('threadSub').textContent=decodeURIComponent(subject);
+    const bodyText=decodeURIComponent(body).replace(/\n/g,'<br>');
+    document.getElementById('msgThread').innerHTML=`
+      <div style="padding:14px 16px;border-radius:14px;background:var(--card);border:1.5px solid var(--border);max-width:90%;box-shadow:var(--shadow-card);">
+        <div style="font-size:13px;line-height:1.7;">${bodyText}</div>
+        <div style="font-size:10px;color:var(--gray);margin-top:6px;">${new Date(date).toLocaleString()} · Valley Verde</div>
+      </div>`;
+    showScreen('scrThread');
+    updateInboxBadge();
+  }catch(e){}
+}
+
+// ══ BIRTHDAY ══
+function check420(){
+  const banner=document.getElementById('f420Banner');
+  const badge=document.getElementById('mc420Badge');
+  const ownerBanner=document.getElementById('ownerBanner');
+  const ownerBadge=document.getElementById('ownerBadge');
+
+  // Owner always gets everything
+  if(isOwner()){
+    if(banner)banner.style.display='block';
+    if(badge)badge.style.display='inline-block';
+    if(ownerBanner)ownerBanner.style.display='block';
+    if(ownerBadge)ownerBadge.style.display='inline-block';
+    return;
+  }
+
+  // 4/20 member
+  if(profile.is_420_member){
+    if(banner)banner.style.display='block';
+    if(badge)badge.style.display='inline-block';
+  } else {
+    if(banner)banner.style.display='none';
+    if(badge)badge.style.display='none';
+  }
+  if(ownerBanner)ownerBanner.style.display='none';
+  if(ownerBadge)ownerBadge.style.display='none';
+}
+
+function checkBday(){
+  const b=document.getElementById('bdayBanner');if(!b)return;
+  if(!profile.birthday){b.style.display='none';return;}
+  const bd=new Date(profile.birthday+'T12:00:00'),now=new Date();
+  const isBday=bd.getMonth()===now.getMonth()&&bd.getDate()===now.getDate();
+  b.style.display=isBday?'block':'none';
+}
+
+// ══ DAILY SPIN ══
+const OWNER_EMAIL = 'aramyan.artos@gmail.com';
+
+function isOwner(){ return profile && (profile.email===OWNER_EMAIL || currentUser?.email===OWNER_EMAIL); }
+
+function hasSpunToday(){
+  if(isOwner()) return false; // owner always spins
+  if(!profile.last_spin_date)return false;
+  return new Date(profile.last_spin_date).toDateString()===new Date().toDateString();
+}
+function timeLeft(){
+  const now=new Date(),mid=new Date();mid.setHours(24,0,0,0);
+  const d=mid-now;return Math.floor(d/3600000)+'h '+Math.floor((d%3600000)/60000)+'m';
+}
+function checkDailyBanner(){
+  const b=document.getElementById('dailyBanner'),btn=document.getElementById('spinBtn');if(!b||!btn)return;
+  const title=document.getElementById('bannerTitle');
+  const sub=document.getElementById('bannerSub');
+  const cd=document.getElementById('countdown');
+  if(isOwner()){
+    // Show countdown but spin button stays enabled
+    b.classList.add('show');
+    if(title)title.textContent='👑 Owner Mode — Unlimited Spins';
+    if(sub)sub.textContent='Resets in';
+    if(cd)cd.textContent=timeLeft();
+    btn.disabled=false;btn.textContent='🌿 SPIN!';
+    btn.style.animation='siBtnPulse 2s ease-in-out infinite';
+    return;
+  }
+  if(hasSpunToday()){
+    b.classList.add('show');
+    if(title)title.textContent='Daily Spin Used ✅';
+    if(sub)sub.textContent='Next spin in';
+    if(cd)cd.textContent=timeLeft();
+    btn.disabled=true;btn.textContent='✅ Come Back Tomorrow!';
+    btn.style.animation='none';
+  }else{
+    b.classList.remove('show');
+    btn.disabled=false;btn.textContent='🌿 SPIN!';
+    btn.style.animation='siBtnPulse 2s ease-in-out infinite';
+  }
+}
+
+// ══ WHEEL ══
+// Canvas initialized at bottom START section
+function startIdleSpin(){ }
+function stopIdleSpin(){ }
+// Use unique prize segments (8 visual slices)
+const WHEEL_SEGMENTS=[
+  {label:'TRY AGAIN',emoji:'🍀',color:'#041e28'},
+  {label:'5% OFF',   emoji:'🍃',color:'#0a3248'},
+  {label:'TRY AGAIN',emoji:'🌿',color:'#031820'},
+  {label:'10% OFF',  emoji:'💚',color:'#0a3a4a'},
+  {label:'TRY AGAIN',emoji:'🍀',color:'#041e28'},
+  {label:'15% OFF',  emoji:'🌱',color:'#1a6a1a'},
+  {label:'FREE PRE-ROLL',emoji:'🌿',color:'#062838'},
+  {label:'FREE GIFT',emoji:'🎁',color:'#031822'},
+];
+
+function drawWheel(rot){
+  const n=WHEEL_SEGMENTS.length,sl=(2*Math.PI)/n;
+  ctx.clearRect(0,0,canvas.width,canvas.height);
+  for(let i=0;i<n;i++){
+    const s=WHEEL_SEGMENTS[i],st=rot+i*sl,en=st+sl,mid=st+sl/2;
+    ctx.beginPath();ctx.moveTo(CX,CY);ctx.arc(CX,CY,R,st,en);ctx.closePath();
+    ctx.fillStyle=s.color;ctx.fill();
+    ctx.strokeStyle='rgba(0,191,175,.3)';ctx.lineWidth=1.5;ctx.stroke();
+    // emoji
+    const ex=CX+Math.cos(mid)*(R*.32),ey=CY+Math.sin(mid)*(R*.32);
+    ctx.save();ctx.translate(ex,ey);ctx.font='16px serif';ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillText(s.emoji,0,0);ctx.restore();
+    // label
+    const tx=CX+Math.cos(mid)*(R*.70),ty=CY+Math.sin(mid)*(R*.70),words=s.label.split(' ');
+    ctx.save();ctx.translate(tx,ty);ctx.rotate(mid+Math.PI/2);ctx.textAlign='center';ctx.textBaseline='middle';ctx.font='bold 13px -apple-system,Arial,sans-serif';
+    words.forEach((w,wi)=>{const y=(wi-(words.length-1)/2)*15;ctx.strokeStyle='rgba(0,0,0,.95)';ctx.lineWidth=5;ctx.lineJoin='round';ctx.strokeText(w,0,y);ctx.fillStyle='#ffffff';ctx.fillText(w,0,y);});
+    ctx.restore();
+  }
+  // outer ring
+  ctx.beginPath();ctx.arc(CX,CY,R,0,2*Math.PI);ctx.strokeStyle='rgba(0,191,175,.6)';ctx.lineWidth=4;ctx.stroke();
+  // inner gold ring
+  ctx.beginPath();ctx.arc(CX,CY,R*.15,0,2*Math.PI);ctx.fillStyle='#0f2412';ctx.fill();ctx.strokeStyle='var(--gold)';ctx.lineWidth=2;ctx.stroke();
+  ctx.font='13px serif';ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillStyle='#00bfaf';ctx.fillText('🌿',CX,CY);
+}
+
+async function doSpin(){
+  if(spinning||!profile)return;
+  if(hasSpunToday()){checkDailyBanner();return;}
+  stopIdleSpin();
+  spinning=true;document.getElementById('spinBtn').disabled=true;
+  const prizeIdx=WEIGHTED_POOL[Math.floor(Math.random()*WEIGHTED_POOL.length)];
+  const prize=PRIZES[prizeIdx];
+  const segIdx=WHEEL_SEGMENTS.findIndex(s=>s.label===prize.label);
+  const landSeg=segIdx>=0?segIdx:Math.floor(Math.random()*WHEEL_SEGMENTS.length);
+  const n=WHEEL_SEGMENTS.length,sl=(2*Math.PI)/n;
+  const extra=(6+Math.floor(Math.random()*4))*2*Math.PI;
+  const segMid=landSeg*sl+sl/2,target=-Math.PI/2-segMid;
+  const from=wA,to=from+extra+((target-from%(2*Math.PI))%(2*Math.PI)+2*Math.PI)%(2*Math.PI);
+  const dur=5000,t0=performance.now(),ease=t=>1-Math.pow(1-t,4);
+  await new Promise(res=>{
+    (function frame(now){
+      const t=Math.min((now-t0)/dur,1);wA=from+(to-from)*ease(t);drawWheel(wA);
+      if(t<1)requestAnimationFrame(frame);else res();
+    })(performance.now());
+  });
+  spinning=false;document.getElementById('spinBtn').disabled=false;wA=wA%(2*Math.PI);
+  // Save to DB
+  try{
+    let sp=(profile.spin_points||0)+prize.pts;
+    const spins=(profile.spins||0)+1;
+    let miles=[...(profile.milestones||[])];
+    const unlocks=[];
+    SPIN_MILES.forEach(m=>{
+      if(miles.includes(m.id))return;
+      if(spins>=m.spins){miles.push(m.id);sp+=m.pts;unlocks.push(m);}
+    });
+    const now=new Date().toISOString();
+    await sb.from('profiles').update({spin_points:sp,spins,milestones:miles,last_spin_date:now}).eq('id',currentUser.id);
+    await sb.from('spins').insert({user_id:currentUser.id,prize:prize.label,emoji:prize.emoji,pts:prize.pts,is_winner:prize.win,claimed:false});
+    profile.spin_points=sp;profile.spins=spins;profile.milestones=miles;profile.last_spin_date=now;
+    document.getElementById('spinPts').textContent=sp;
+    let bonus=unlocks.length?'\n\n🏅 Milestone: '+unlocks.map(m=>m.name).join(', ')+'! Bonus pts added!':'';
+    setTimeout(()=>{
+      document.getElementById('popEmoji').textContent=prize.emoji;
+      document.getElementById('popPrize').textContent=prize.label;
+      document.getElementById('popName').textContent=profile.first_name;
+      document.getElementById('popDesc').textContent=(prize.win?'Show this to staff at the counter to claim!':'Better luck tomorrow — you still earned points!')+bonus;
+      document.getElementById('popPts').textContent='+'+prize.pts+' spin pts · Total: '+sp+' pts';
+      document.getElementById('resultOv').classList.add('show');
+    },300);
+  }catch(e){
+    document.getElementById('spinBtn').disabled=false;
+    alert('Error saving spin. Check your connection.');
+  }
+}
+
+function closeResult(){
+  document.getElementById('resultOv').classList.remove('show');
+  drawWheel(wA);
+  renderAll();checkDailyBanner();
+}
+
+// ══ REDEEM ══
+async function doRedeem(id,name,desc,cost){
+  const sp=profile.spin_points||0;
+  if(sp<cost){alert('Not enough points!');return;}
+  try{
+    const newPts=sp-cost;
+    await sb.from('profiles').update({spin_points:newPts}).eq('id',currentUser.id);
+    await sb.from('redemptions').insert({user_id:currentUser.id,reward_name:name,pts_cost:cost,claimed:false});
+    profile.spin_points=newPts;
+    document.getElementById('rvTitle').textContent=name;
+    document.getElementById('rvDesc').textContent=desc;
+    document.getElementById('redeemOv').classList.add('show');
+    renderAll();
+  }catch(e){alert('Error redeeming. Check connection.');}
+}
+
+// ══ ADMIN ══
+async function loadAdmin(){
+  showScreen('scrAdmin');
+  try{
+    const{data:members}=await sb.from('profiles').select('*').order('spend_points',{ascending:false});
+    const{data:wins}=await sb.from('spins').select('*,profiles(first_name,last_name)').eq('is_winner',true).order('created_at',{ascending:false}).limit(100);
+    const{data:allSpins}=await sb.from('spins').select('id',{count:'exact',head:false}).limit(1);
+    const totalSpins=allSpins?allSpins.length:0;
+    const totalSpend=members?.reduce((a,u)=>a+(u.spend_points||0),0)||0;
+    document.getElementById('adminStats').innerHTML=`
+      <div class="stat-card"><div class="sv">${members?.length||0}</div><div class="sl">MEMBERS</div></div>
+      <div class="stat-card"><div class="sv">${wins?.length||0}</div><div class="sl">PRIZES WON</div></div>
+      <div class="stat-card"><div class="sv">${totalSpend}</div><div class="sl">TOTAL $PTS</div></div>
+      <div class="stat-card"><div class="sv">${members?.filter(m=>m.birthday&&new Date(m.birthday+'T12:00:00').toDateString()===new Date().toDateString()).length||0}</div><div class="sl">BDAYS TODAY 🎂</div></div>`;
+    // Member list
+    document.getElementById('aMemberList').innerHTML=members?.length?members.map(m=>{
+      const tier=getTier(m.spend_points||0),tc=tierColor(tier.id);
+      const isBday=m.birthday&&new Date(m.birthday+'T12:00:00').toDateString()===new Date().toDateString();
+      return`<div class="ml-row" onclick="openMemberPop('${m.id}','${(m.first_name||'').replace(/'/g,"\\'")}','${(m.last_name||'').replace(/'/g,"\\'")}','${m.phone||m.email||''}','${m.email||''}',${m.spin_points||0},${m.spend_points||0},${m.spins||0},'${m.joined||''}')">
+        <div class="ml-av">${(m.first_name||'?')[0]}${(m.last_name||'?')[0]}</div>
+        <div class="ml-info">
+          <div class="ml-name">${m.first_name} ${m.last_name} <span style="color:${tc}">${tier.icon}</span>${isBday?' 🎂':''}</div>
+          <div class="ml-meta">${m.phone||m.email||''} · ${m.spins||0} spins · 🔥${m.visit_streak||0} streak · ${m.total_visits||0} visits · Joined ${m.joined?new Date(m.joined).toLocaleDateString():'-'}</div>
+        </div>
+        <div style="text-align:right;"><div style="font-size:13px;font-weight:900;color:var(--green);">${m.spin_points||0}sp</div><div style="font-size:10px;color:var(--gold);">${m.spend_points||0}$</div></div>
+      </div>`;}).join(''):'<div style="text-align:center;color:var(--gray);padding:30px;font-size:13px;">No members yet.</div>';
+    // Win tracking list
+    document.getElementById('aWinList').innerHTML=wins?.length?wins.map(w=>`
+      <div style="display:flex;justify-content:space-between;align-items:center;background:var(--card);border:1.5px solid ${w.claimed?'var(--border)':'var(--green)'};border-radius:10px;padding:9px 13px;margin-bottom:7px;box-shadow:var(--shadow-card);">
+        <div>
+          <div style="font-size:13px;font-weight:700;">${w.emoji} ${w.prize}</div>
+          <div style="font-size:10px;color:var(--gray);margin-top:1px;">${w.profiles?.first_name||''} ${w.profiles?.last_name||''} · ${new Date(w.created_at).toLocaleString()}</div>
+        </div>
+        <div style="font-size:11px;font-weight:700;padding:4px 10px;border-radius:18px;${w.claimed?'background:var(--border);color:var(--gray)':'background:var(--green);color:#071208'};cursor:pointer;" onclick="markClaimed('${w.id}',this)">${w.claimed?'CLAIMED':'CLAIM ✓'}</div>
+      </div>`).join(''):'<div style="text-align:center;color:var(--gray);padding:30px;font-size:13px;">No prizes won yet.</div>';
+    // Message dropdown
+    const sel=document.getElementById('msgTarget');
+    sel.innerHTML='<option value="">— Choose member —</option>';
+    members?.forEach(m=>{sel.innerHTML+=`<option value="${m.id}">${m.first_name} ${m.last_name} (${m.phone||m.email||''})</option>`;});
+  }catch(e){handleErr(e,'Could not load admin data.');}
+}
+
+async function markClaimed(spinId,btn){
+  try{
+    await sb.from('spins').update({claimed:true,claimed_at:new Date().toISOString()}).eq('id',spinId);
+    btn.textContent='CLAIMED';btn.style.background='var(--border)';btn.style.color='var(--gray)';btn.style.cursor='default';
+    btn.parentElement.parentElement.style.borderColor='var(--border)';
+    btn.onclick=null;
+  }catch(e){alert('Error updating.');}
+}
+
+function openMemberPop(id,first,last,phone,email,sp,dp,spins,joined){
+  adminMemberId=id;
+  document.getElementById('mpName').textContent=(first+' '+last).trim();
+  document.getElementById('mpContact').textContent=phone+(email&&phone!==email?' · '+email:'');
+  document.getElementById('mpJoined').textContent=joined?'Joined '+new Date(joined).toLocaleDateString():'';
+  document.getElementById('mpSP').textContent=sp;
+  document.getElementById('mpDP').textContent=dp;
+  document.getElementById('mpSpins').textContent=spins;
+  document.getElementById('spendAmt').value='';
+  document.getElementById('bonusAmt').value='';
+  document.getElementById('spendOk').textContent='';
+  document.getElementById('bonusOk').textContent='';
+  document.getElementById('mp420Ok').textContent='';
+  // Load 420 status for this member
+  sb.from('profiles').select('is_420_member').eq('id',id).single().then(({data})=>{
+    const is420=data?.is_420_member||false;
+    const statusEl=document.getElementById('mp420Status');
+    const btnEl=document.getElementById('mp420Btn');
+    if(statusEl)statusEl.textContent=is420?'✅ Active — 10% off always':'❌ Not granted';
+    if(statusEl)statusEl.style.color=is420?'var(--green-bright)':'rgba(255,255,255,.4)';
+    if(btnEl)btnEl.textContent=is420?'Revoke':'Grant';
+    if(btnEl)btnEl.className=is420?'btn btn-danger btn-sm':'btn btn-green btn-sm';
+  });
+  document.getElementById('memberPop').classList.add('show');
+}
+
+async function toggle420Member(){
+  const{data:m}=await sb.from('profiles').select('is_420_member,first_name').eq('id',adminMemberId).single();
+  const current=m?.is_420_member||false;
+  const newVal=!current;
+  await sb.from('profiles').update({is_420_member:newVal}).eq('id',adminMemberId);
+  // Update UI
+  const statusEl=document.getElementById('mp420Status');
+  const btnEl=document.getElementById('mp420Btn');
+  const ok=document.getElementById('mp420Ok');
+  if(statusEl){statusEl.textContent=newVal?'✅ Active — 10% off always':'❌ Not granted';statusEl.style.color=newVal?'var(--green-bright)':'rgba(255,255,255,.4)';}
+  if(btnEl){btnEl.textContent=newVal?'Revoke':'Grant';btnEl.className=newVal?'btn btn-danger btn-sm':'btn btn-green btn-sm';}
+  if(ok)ok.textContent=newVal?`✅ 4/20 membership granted to ${m.first_name}!`:`Revoked from ${m.first_name}.`;
+  // Send inbox message to member
+  if(newVal){
+    await sb.from('messages').insert({
+      recipient_id:adminMemberId,
+      subject:'🏷️ You\'re a 4/20 Founding Member!',
+      body:`Hey ${m.first_name}! 🌿\n\nGreat news — you've been granted 4/20 Founding Member status!\n\n🏷️ You now get 10% OFF every single visit, forever.\n\nShow your account screen to staff at checkout to claim your discount.\n\nThank you for being part of the family!\n— Valley Verde Team`,
+      read:false,
+    });
+  }
+  setTimeout(()=>{if(ok)ok.textContent='';},3000);
+}
+
+async function addSpendPts(){
+  const amt=parseFloat(document.getElementById('spendAmt').value);
+  const ok=document.getElementById('spendOk');
+  if(!amt||amt<=0){ok.style.color='var(--red)';ok.textContent='⚠️ Enter valid amount.';return;}
+  try{
+    const{data:m}=await sb.from('profiles').select('spend_points').eq('id',adminMemberId).single();
+    const cur=m.spend_points||0,tier=getTier(cur),earned=Math.round(amt*tier.multi),newDp=cur+earned;
+    await sb.from('profiles').update({spend_points:newDp}).eq('id',adminMemberId);
+    // Log transaction
+    await sb.from('spend_transactions').insert({user_id:adminMemberId,amount_spent:amt,pts_earned:earned,tier_at_time:tier.name,multiplier:tier.multi});
+    document.getElementById('mpDP').textContent=newDp;
+    ok.style.color='var(--green)';
+    ok.textContent='✅ $'+amt+' → +'+earned+' pts ('+tier.name+' ×'+tier.multi+') · Total: '+newDp;
+    document.getElementById('spendAmt').value='';
+    loadAdmin();
+  }catch(e){ok.style.color='var(--red)';ok.textContent='⚠️ Error: '+e.message;}
+}
+
+async function addBonusPts(){
+  const amt=parseInt(document.getElementById('bonusAmt').value);
+  const ok=document.getElementById('bonusOk');
+  if(!amt||amt<=0){ok.style.color='var(--red)';ok.textContent='⚠️ Enter amount.';return;}
+  try{
+    const{data:m}=await sb.from('profiles').select('spin_points').eq('id',adminMemberId).single();
+    const newPts=(m.spin_points||0)+amt;
+    await sb.from('profiles').update({spin_points:newPts}).eq('id',adminMemberId);
+    document.getElementById('mpSP').textContent=newPts;
+    ok.style.color='var(--green)';
+    ok.textContent='✅ +'+amt+' spin pts added · Total: '+newPts;
+    document.getElementById('bonusAmt').value='';
+    loadAdmin();
+  }catch(e){ok.style.color='var(--red)';ok.textContent='⚠️ Error: '+e.message;}
+}
+
+function adminTab(tab){
+  ['members','wins','msg','requests','reviews'].forEach(t=>{
+    const el=document.getElementById('a'+t.charAt(0).toUpperCase()+t.slice(1));
+    if(el)el.style.display=t===tab?'block':'none';
+  });
+  document.getElementById('at1').className='tab'+(tab==='members'?' active':'');
+  document.getElementById('at2').className='tab'+(tab==='wins'?' active':'');
+  document.getElementById('at3').className='tab'+(tab==='msg'?' active':'');
+  document.getElementById('at4').className='tab'+(tab==='requests'?' active':'');
+  document.getElementById('at5').className='tab'+(tab==='reviews'?' active':'');
+  if(tab==='requests')loadSpendRequests();
+  if(tab==='reviews')loadAdminReviews();
+}
+
+async function sendMsg(){
+  const to=document.getElementById('msgTarget').value;
+  const subj=document.getElementById('msgSubject').value.trim();
+  const body=document.getElementById('msgBody').value.trim();
+  const ok=document.getElementById('msgOk'),err=document.getElementById('msgErr');
+  if(!to){err.textContent='⚠️ Select a member.';return;}
+  if(!subj){err.textContent='⚠️ Enter a subject.';return;}
+  if(!body){err.textContent='⚠️ Enter a message.';return;}
+  err.textContent='';
+  try{
+    await sb.from('messages').insert({recipient_id:to,subject:subj,body,read:false,msg_type:'admin'});
+    ok.textContent='✅ Message sent!';
+    document.getElementById('msgSubject').value='';document.getElementById('msgBody').value='';
+    setTimeout(()=>ok.textContent='',3000);
+  }catch(e){err.textContent='⚠️ '+e.message;}
+}
+
+async function broadcast(){
+  const subj=document.getElementById('bcSubject').value.trim();
+  const body=document.getElementById('bcBody').value.trim();
+  const ok=document.getElementById('bcOk');
+  if(!subj||!body){ok.textContent='⚠️ Fill in all fields.';ok.style.color='var(--red)';return;}
+  try{
+    const{data:members}=await sb.from('profiles').select('id');
+    if(!members?.length){ok.textContent='No members yet.';return;}
+    const msgs=members.map(m=>({recipient_id:m.id,subject:subj,body,read:false,msg_type:'promo'}));
+    // Insert in batches of 50
+    for(let i=0;i<msgs.length;i+=50)await sb.from('messages').insert(msgs.slice(i,i+50));
+    ok.style.color='var(--green)';
+    ok.textContent='✅ Sent to '+members.length+' members!';
+    document.getElementById('bcSubject').value='';document.getElementById('bcBody').value='';
+    setTimeout(()=>ok.textContent='',4000);
+  }catch(e){ok.style.color='var(--red)';ok.textContent='⚠️ '+e.message;}
+}
+
+// ══ NAV ══
+function hideLoader(){
+  const l=document.getElementById('nsLoader');
+  if(l){l.style.opacity='0';setTimeout(()=>{if(l)l.remove();
+    const btn=document.getElementById('siBtn');
+    if(btn)btn.style.animation='siBtnPulse 2s ease-in-out infinite';
+  },400);}
+}
+
+function showGlobalNav(show){
+  const nav=document.getElementById('globalNav');
+  if(nav)nav.style.display=show?'flex':'none';
+}
+
+function setActiveNav(tab){
+  const map={home:'gnHome',spin:'gnSpin',redeem:'gnRedeem',inbox:'gnInbox',settings:'gnSettings'};
+  document.querySelectorAll('#globalNav .nav-btn').forEach(b=>b.classList.remove('active'));
+  const active=document.getElementById(map[tab]);
+  if(active)active.classList.add('active');
+}
+
+function showScreen(id){
+  hideLoader();
+  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+  const el=document.getElementById(id);
+  if(el){
+    el.classList.add('active');
+    window.scrollTo({top:0,behavior:'instant'});
+    if(navigator.vibrate)navigator.vibrate(6);
+  }
+  // Only show nav when logged in (not on auth/admin-login/loading screens)
+  const noNav=['scrAuth','scrAdminLogin','scrError'];
+  showGlobalNav(!noNav.includes(id));
+}
+function closeOv(id){document.getElementById(id).classList.remove('show');}
+function gotoTab(tab){
+  const map={home:'scrHome',spin:'scrSpin',redeem:'scrRedeem',inbox:'scrInbox',settings:'scrSettings'};
+  showScreen(map[tab]);
+  // Update global nav active state
+  ['home','spin','redeem','inbox','settings'].forEach(t=>{
+    const b=document.getElementById('gn'+t.charAt(0).toUpperCase()+t.slice(1));
+    if(b)b.className='nav-btn'+(t===tab?' active':'');
+  });
+  if(tab!=='inbox')renderAll();
+  if(tab==='spin')checkDailyBanner();
+  if(tab==='inbox'){renderInbox();updateInboxBadge();}
+  if(tab==='settings')loadSettings();
+}
+
+// ══ SETTINGS ══
+function loadSettings(){
+  if(!profile)return;
+  document.getElementById('setFirst').value=profile.first_name||'';
+  document.getElementById('setLast').value=profile.last_name||'';
+  document.getElementById('setPhone').value=profile.phone||'';
+  document.getElementById('setBday').value=profile.birthday||'';
+  const notifs=profile.notifications||{deals:true,bday:true,loyalty:true};
+  ['Deals','Bday','Loyalty'].forEach(k=>{
+    const chk=document.getElementById('notif'+k);
+    const spn=document.getElementById('toggle'+k);
+    const val=notifs[k.toLowerCase()]!==false;
+    if(chk)chk.checked=val;
+    if(spn)spn.style.background=val?'var(--green)':'var(--border)';
+  });
+}
+
+async function saveProfile(){
+  const first=document.getElementById('setFirst').value.trim();
+  const last=document.getElementById('setLast').value.trim();
+  const phone=document.getElementById('setPhone').value.trim();
+  const bday=document.getElementById('setBday').value;
+  const ok=document.getElementById('profileOk'),err=document.getElementById('profileErr');
+  if(!first){err.textContent='⚠️ First name required.';return;}
+  if(!last){err.textContent='⚠️ Last name required.';return;}
+  err.textContent='';
+  let digits=phone.replace(/\D/g,'');
+  if(digits.length===10)digits='1'+digits;
+  const fp=digits?'+'+digits:phone;
+  const{error}=await sb.from('profiles').update({first_name:first,last_name:last,phone:fp,birthday:bday||null}).eq('id',currentUser.id);
+  if(error){err.textContent='⚠️ '+error.message;return;}
+  profile.first_name=first;profile.last_name=last;profile.phone=fp;profile.birthday=bday||null;
+  ok.textContent='✅ Profile updated!';setTimeout(()=>ok.textContent='',3000);
+}
+
+async function changePassword(){
+  const np=document.getElementById('newPass').value;
+  const cp=document.getElementById('confirmPass').value;
+  const ok=document.getElementById('passOk'),err=document.getElementById('passErr');
+  if(np.length<6){err.textContent='⚠️ Min 6 characters.';return;}
+  if(np!==cp){err.textContent='⚠️ Passwords do not match.';return;}
+  err.textContent='';
+  const{error}=await sb.auth.updateUser({password:np});
+  if(error){err.textContent='⚠️ '+error.message;return;}
+  ok.textContent='✅ Password updated!';
+  document.getElementById('newPass').value='';document.getElementById('confirmPass').value='';
+  setTimeout(()=>ok.textContent='',3000);
+}
+
+async function saveNotifs(){
+  const notifs={
+    deals:document.getElementById('notifDeals').checked,
+    bday:document.getElementById('notifBday').checked,
+    loyalty:document.getElementById('notifLoyalty').checked,
+  };
+  ['Deals','Bday','Loyalty'].forEach(k=>{
+    const chk=document.getElementById('notif'+k),spn=document.getElementById('toggle'+k);
+    if(spn)spn.style.background=chk.checked?'var(--green)':'var(--border)';
+  });
+  await sb.from('profiles').update({notifications:notifs}).eq('id',currentUser.id);
+  profile.notifications=notifs;
+  const ok=document.getElementById('notifOk');
+  ok.textContent='✅ Saved!';setTimeout(()=>ok.textContent='',2000);
+}
+
+// ══ SPEND REQUESTS ══
+async function submitSpendRequest(){
+  const amt=parseFloat(document.getElementById('reqAmt').value);
+  const date=document.getElementById('reqDate').value;
+  const time=document.getElementById('reqTime').value;
+  const qty=document.getElementById('reqQty').value.trim();
+  const email=document.getElementById('reqEmail').value.trim();
+  const note=document.getElementById('reqNote').value.trim();
+  const ok=document.getElementById('reqOk'),err=document.getElementById('reqErr');
+  if(!amt||amt<=0){err.textContent='⚠️ Enter a valid amount.';return;}
+  if(!date){err.textContent='⚠️ Select the date of purchase.';return;}
+  if(!email){err.textContent='⚠️ Please enter your email so we can contact you.';return;}
+  if(!qty){err.textContent='⚠️ Please enter the product and quantity.';return;}
+  err.textContent='';
+  const{error}=await sb.from('spend_requests').insert({
+    user_id:currentUser.id,
+    name:profile.first_name+' '+profile.last_name,
+    phone:profile.phone||profile.email,
+    email:email,
+    amount:amt,
+    purchase_date:date,
+    purchase_time:time||null,
+    quantity:qty||null,
+    note:note||null,
+    status:'pending',
+  });
+  if(error){err.textContent='⚠️ '+error.message;return;}
+  ok.textContent='✅ Request submitted! Staff will review within 24 hours.';
+  document.getElementById('reqAmt').value='';
+  document.getElementById('reqDate').value='';
+  document.getElementById('reqTime').value='';
+  document.getElementById('reqQty').value='';
+  document.getElementById('reqEmail').value='';
+  document.getElementById('reqNote').value='';
+  setTimeout(()=>ok.textContent='',5000);
+  loadMyRequests();
+}
+
+async function loadMyRequests(){
+  const el=document.getElementById('myRequests');if(!el)return;
+  const{data}=await sb.from('spend_requests').select('*').eq('user_id',currentUser.id).order('created_at',{ascending:false}).limit(10);
+  if(!data||!data.length){el.innerHTML='<div class="empty">No requests yet.</div>';return;}
+  const colors={pending:'var(--gold)',approved:'var(--green)',rejected:'var(--red)'};
+  el.innerHTML=data.map(r=>`
+    <div style="display:flex;align-items:center;gap:10px;background:var(--card);border:1px solid var(--border);border-radius:11px;padding:10px 13px;margin-bottom:7px;">
+      <div style="flex:1;">
+        <div style="font-size:14px;font-weight:900;">$${r.amount} spent</div>
+        <div style="font-size:10px;color:var(--gray);margin-top:2px;">${new Date(r.purchase_date).toLocaleDateString()}${r.note?' · '+r.note:''}</div>
+      </div>
+      <div style="font-size:11px;font-weight:700;padding:3px 10px;border-radius:20px;border:1px solid ${colors[r.status]||'var(--border)'};color:${colors[r.status]||'var(--gray)'};">${r.status.toUpperCase()}</div>
+    </div>`).join('');
+}
+
+async function loadSpendRequests(){
+  const el=document.getElementById('aRequestList');if(!el)return;
+  const{data}=await sb.from('spend_requests').select('*').order('created_at',{ascending:false});
+  if(!data||!data.length){el.innerHTML='<div class="empty">No requests yet.</div>';return;}
+  el.innerHTML=data.map(r=>`
+    <div style="background:var(--card);border:1px solid ${r.status==='pending'?'var(--gold)':'var(--border)'};border-radius:12px;padding:13px;margin-bottom:9px;">
+      <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:8px;">
+        <div>
+          <div style="font-size:14px;font-weight:900;">${r.name}</div>
+          <div style="font-size:10px;color:var(--gold);margin-top:2px;">📧 ${r.email||r.phone||'—'}</div>
+          <div style="font-size:10px;color:var(--gray);margin-top:1px;">📅 ${new Date(r.purchase_date).toLocaleDateString()}${r.purchase_time?' at '+r.purchase_time:''}</div>
+          ${r.quantity?`<div style="font-size:10px;color:var(--gray);">📦 ${r.quantity}</div>`:''}
+          ${r.note?`<div style="font-size:10px;color:var(--gray);">📝 ${r.note}</div>`:''}
+        </div>
+        <div style="font-size:22px;font-weight:900;color:var(--gold);flex-shrink:0;">$${r.amount}</div>
+      </div>
+      ${r.status==='pending'?`
+        <div style="display:flex;gap:7px;">
+          <button onclick="approveRequest('${r.id}','${r.user_id}',${r.amount})" style="flex:1;background:var(--green);color:#0a1a0c;border:none;border-radius:20px;padding:8px;font-size:12px;font-weight:900;cursor:pointer;">✅ APPROVE</button>
+          <button onclick="rejectRequest('${r.id}')" style="flex:1;background:var(--red);color:#fff;border:none;border-radius:20px;padding:8px;font-size:12px;font-weight:900;cursor:pointer;">❌ REJECT</button>
+        </div>`:
+        `<div style="font-size:11px;font-weight:700;color:${r.status==='approved'?'var(--green)':'var(--red)'};">${r.status==='approved'?'✅ APPROVED':'❌ REJECTED'}</div>`
+      }
+    </div>`).join('');
+}
+
+async function approveRequest(reqId,userId,amount){
+  // Get member and their tier
+  const{data:m}=await sb.from('profiles').select('spend_points,first_name').eq('id',userId).single();
+  if(!m)return;
+  const tier=getTier(m.spend_points||0);
+  const earned=Math.round(amount*tier.multi);
+  const newDp=(m.spend_points||0)+earned;
+  await sb.from('profiles').update({spend_points:newDp}).eq('id',userId);
+  await sb.from('spend_requests').update({status:'approved'}).eq('id',reqId);
+  // Send notification message
+  await sb.from('messages').insert({
+    recipient_id:userId,
+    subject:'💰 Spend Points Added!',
+    body:`Great news ${m.first_name}! Your spend request of $${amount} has been approved. We added ${earned} points to your account (${tier.name} tier × ${tier.multi}). Your new total is ${newDp} spend points. Keep it up! — Valley Verde Team`,
+    read:false,
+  });
+  loadSpendRequests();
+}
+
+async function rejectRequest(reqId){
+  await sb.from('spend_requests').update({status:'rejected'}).eq('id',reqId);
+  loadSpendRequests();
+}
+
+// ══ CALL BUTTON ══
+let selectedStars = 0;
+
+function doCall(){
+  // Show notification
+  const notif=document.getElementById('callNotif');
+  const btn=document.getElementById('callBtn');
+  if(notif){notif.style.display='block';}
+  if(btn){btn.style.borderColor='var(--gold)';btn.style.background='linear-gradient(135deg,#2a4a0a,#1a3a0a)';}
+  // Log the call attempt in Supabase
+  if(currentUser&&profile){
+    sb.from('call_requests').insert({
+      user_id:currentUser.id,
+      name:profile.first_name+' '+profile.last_name,
+      phone:profile.phone||profile.email,
+      created_at:new Date().toISOString(),
+    }).then(()=>{});
+  }
+  // Actually call
+  setTimeout(()=>{
+    window.location.href='tel:+18182903833';
+    setTimeout(()=>{
+      if(notif)notif.style.display='none';
+      if(btn){btn.style.borderColor='var(--green)';btn.style.background='linear-gradient(135deg,#1a5c1a,#0d3d0d)';}
+    },4000);
+  },800);
+}
+
+// ══ STAR RATING ══
+function setStars(n){
+  selectedStars=n;
+  const stars=document.querySelectorAll('.star');
+  const labels=['','😔 Poor','😐 OK','😊 Good','😄 Great','🤩 Amazing!'];
+  stars.forEach((s,i)=>{
+    s.classList.toggle('active',i<n);
+    s.style.filter=i<n?'none':'grayscale(1)';
+    s.style.transform=i<n?'scale(1.2)':'scale(1)';
+  });
+  const lbl=document.getElementById('starLabel');
+  if(lbl)lbl.textContent=labels[n]||'';
+}
+
+// ══ SUBMIT REVIEW ══
+async function submitReview(){
+  const text=document.getElementById('reviewText').value.trim();
+  const type=document.getElementById('reviewType').value;
+  const ok=document.getElementById('reviewOk'),err=document.getElementById('reviewErr');
+  if(!selectedStars){err.textContent='⚠️ Please tap a star to rate.';return;}
+  if(!text){err.textContent='⚠️ Please write your message.';return;}
+  err.textContent='';
+  const{error}=await sb.from('reviews').insert({
+    user_id:currentUser.id,
+    name:profile.first_name+' '+profile.last_name,
+    stars:selectedStars,
+    type,
+    message:text,
+    created_at:new Date().toISOString(),
+  });
+  if(error){err.textContent='⚠️ '+error.message;return;}
+  ok.textContent='✅ Thank you for your feedback! We appreciate it 🌿';
+  document.getElementById('reviewText').value='';
+  setStars(0);
+  setTimeout(()=>ok.textContent='',4000);
+}
+
+// ══ ADMIN REVIEWS ══
+async function loadAdminReviews(){
+  const el=document.getElementById('aReviewList');if(!el)return;
+  const{data}=await sb.from('reviews').select('*').order('created_at',{ascending:false});
+  if(!data||!data.length){el.innerHTML='<div class="empty">No reviews yet.</div>';return;}
+  const typeColors={review:'var(--gold)',suggestion:'#4a9eff',complaint:'var(--red)',compliment:'var(--green)'};
+  const typeLabel={review:'⭐ Review',suggestion:'💡 Suggestion',complaint:'😔 Complaint',compliment:'🙌 Compliment'};
+  el.innerHTML=data.map(r=>`
+    <div style="background:var(--card);border:1px solid var(--border);border-radius:12px;padding:14px;margin-bottom:9px;">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
+        <div>
+          <div style="font-size:14px;font-weight:900;">${r.name}</div>
+          <div style="font-size:10px;color:var(--gray);">${new Date(r.created_at).toLocaleDateString()}</div>
+        </div>
+        <div style="text-align:right;">
+          <div style="font-size:18px;">${'⭐'.repeat(r.stars)}</div>
+          <div style="font-size:10px;font-weight:700;color:${typeColors[r.type]||'var(--gold)'};">${typeLabel[r.type]||r.type}</div>
+        </div>
+      </div>
+      <div style="font-size:13px;color:var(--white);line-height:1.6;background:var(--card2);border-radius:8px;padding:10px;">"${r.message}"</div>
+    </div>`).join('');
+}
+
+// ══ SUPPORT ══
+async function submitSupport(){
+  const email=document.getElementById('supportEmail').value.trim();
+  const type=document.getElementById('supportType').value;
+  const msg=document.getElementById('supportMsg').value.trim();
+  const ok=document.getElementById('supportOk'),err=document.getElementById('supportErr');
+  if(!email){err.textContent='⚠️ Please enter your email so we can reply to you.';return;}
+  if(!msg){err.textContent='⚠️ Please describe your issue.';return;}
+  err.textContent='';
+  const{error}=await sb.from('support_requests').insert({
+    user_id:currentUser.id,
+    name:profile.first_name+' '+profile.last_name,
+    email:email,
+    phone:profile.phone||'',
+    type,message:msg,status:'open',
+    created_at:new Date().toISOString(),
+  });
+  if(error){err.textContent='⚠️ '+error.message;return;}
+  ok.textContent='✅ Sent! We\'ll get back to you at '+email+' soon.';
+  document.getElementById('supportEmail').value='';
+  document.getElementById('supportMsg').value='';
+  setTimeout(()=>ok.textContent='',4000);
+}
+
+// ══ RIPPLE EFFECT ══
+function addRipple(e,el){
+  const r=el.getBoundingClientRect();
+  const size=Math.max(r.width,r.height)*2;
+  const x=e.clientX-r.left-size/2;
+  const y=e.clientY-r.top-size/2;
+  const ripple=document.createElement('div');
+  ripple.className='ripple-wave';
+  ripple.style.cssText=`width:${size}px;height:${size}px;left:${x}px;top:${y}px;`;
+  el.appendChild(ripple);
+  ripple.addEventListener('animationend',()=>ripple.remove());
+}
+document.addEventListener('click',e=>{
+  const btn=e.target.closest('.btn,.cbtn,#callBtn');
+  if(btn)addRipple(e,btn);
+});
+
+// ══ TAB & ENTER KEY NAVIGATION ══
+// Groups of fields — Tab moves to next, Enter on last field submits
+const fieldGroups = [
+  // Sign in
+  {fields:['siEmail','siPass'], submit: ()=>doSignIn()},
+  // Sign up
+  {fields:['regFirst','regLast','regPhone','regEmail','regPass','regBday'], submit: ()=>doSignUp()},
+  // Forgot password
+  {fields:['fpEmail'], submit: ()=>doForgotPass()},
+  // Admin login
+  {fields:['adminEmail','adminPass'], submit: ()=>adminLogin()},
+  // Settings profile
+  {fields:['setFirst','setLast','setPhone','setBday'], submit: ()=>saveProfile()},
+  // Change password
+  {fields:['newPass','confirmPass'], submit: ()=>changePassword()},
+  // Spend request
+  {fields:['reqAmt','reqDate','reqNote'], submit: ()=>submitSpendRequest()},
+];
+
+document.addEventListener('DOMContentLoaded',()=>{
+  fieldGroups.forEach(({fields, submit})=>{
+    fields.forEach((id, idx)=>{
+      const el = document.getElementById(id);
+      if(!el) return;
+      el.addEventListener('keydown', e=>{
+        if(e.key === 'Enter'){
+          e.preventDefault();
+          if(idx < fields.length - 1){
+            // Tab to next field
+            const next = document.getElementById(fields[idx+1]);
+            if(next) next.focus();
+          } else {
+            // Last field — submit
+            submit();
+          }
+        } else if(e.key === 'Tab'){
+          // Allow natural tab but also handle forward navigation
+          if(!e.shiftKey && idx < fields.length - 1){
+            e.preventDefault();
+            const next = document.getElementById(fields[idx+1]);
+            if(next) next.focus();
+          }
+        }
+      });
+    });
+  });
+
+  // Preview strip hint disappears after scroll
+  const strip=document.getElementById('previewStrip');
+  const hint=document.querySelector('.strip-hint');
+  if(strip&&hint){
+    strip.addEventListener('scroll',()=>{
+      hint.style.opacity='0';hint.style.transition='opacity .5s';
+    },{once:true});
+  }
+});
+
+// ══ START ══
+// Draw wheel immediately so it's always visible
+const canvas=document.getElementById('wc'),ctx=canvas.getContext('2d');
+const DPR=window.devicePixelRatio||2;
+const CANVAS_SIZE=310;
+canvas.width=CANVAS_SIZE*DPR;
+canvas.height=CANVAS_SIZE*DPR;
+canvas.style.width=CANVAS_SIZE+'px';
+canvas.style.height=CANVAS_SIZE+'px';
+ctx.scale(DPR,DPR);
+const CX=CANVAS_SIZE/2,CY=CANVAS_SIZE/2,R=CX-4;
+let wA=-Math.PI/2,spinning=false;
+drawWheel(wA);
+setInterval(()=>{
+  if(isOwner()||(profile&&hasSpunToday())){const el=document.getElementById('countdown');if(el)el.textContent=timeLeft();}
+},30000);
+document.addEventListener('visibilitychange',()=>{
+  if(!document.hidden&&currentUser)updateInboxBadge();
+});
+init();
+</script>
+<!-- GLOBAL NAV — always visible on top of everything -->
+<nav class="nav" id="globalNav" style="display:none;">
+  <button class="nav-btn" id="gnHome" onclick="gotoTab('home')"><span class="ni">🏠</span>HOME</button>
+  <button class="nav-btn" id="gnSpin" onclick="gotoTab('spin')"><span class="ni">🎰</span>SPIN</button>
+  <button class="nav-btn" id="gnRedeem" onclick="gotoTab('redeem')"><span class="ni">🎁</span>REDEEM</button>
+  <button class="nav-btn" id="gnInbox" onclick="gotoTab('inbox')"><span class="ni">💬</span>INBOX</button>
+  <button class="nav-btn" id="gnSettings" onclick="gotoTab('settings')"><span class="ni">⚙️</span>SETTINGS</button>
+</nav>
+</body>
+</html>
